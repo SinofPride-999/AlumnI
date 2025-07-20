@@ -1,0 +1,386 @@
+/* Job Detail Page Specific Styles */
+.job-detail-content {
+    padding: 2rem 0 4rem;
+}
+
+/* Back Link */
+.back-link {
+    margin-bottom: 1.5rem;
+}
+
+/* Job Header Section */
+.job-header-section {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.job-header-content {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.company-logo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: contain;
+    background-color: white;
+    padding: 5px;
+}
+
+.job-title-info h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+}
+
+.company-name {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.job-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.job-meta i {
+    color: var(--color-primary);
+}
+
+.job-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.job-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--color-text), 0.1);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Job Details Section */
+.job-details-section {
+    display: flex;
+    gap: 2rem;
+}
+
+.job-main-content {
+    flex: 2;
+}
+
+.job-sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.job-description, 
+.about-company, 
+.alumni-connection {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.job-description h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary);
+}
+
+.job-description h3 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 1rem;
+    color: var(--color-text);
+}
+
+.job-description p, 
+.about-company p {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.job-description ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.job-description li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+/* Alumni Connection */
+.alumni-profile {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.alumni-profile img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.alumni-profile h4 {
+    margin-bottom: 0.3rem;
+}
+
+.alumni-profile p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.alumni-message {
+    font-style: italic;
+    padding: 1rem;
+    background-color: rgba(var(--color-primary), 0.05);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+}
+
+/* Job Sidebar */
+.quick-facts, 
+.required-skills, 
+.similar-jobs, 
+.share-job {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.quick-facts h3, 
+.required-skills h3, 
+.similar-jobs h3, 
+.share-job h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary);
+}
+
+.fact-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(var(--color-text), 0.1);
+}
+
+.fact-item:last-child {
+    border-bottom: none;
+}
+
+.fact-label {
+    opacity: 0.8;
+}
+
+.fact-value {
+    font-weight: 500;
+}
+
+/* Skills List */
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    background-color: rgba(var(--color-primary), 0.1);
+    color: var(--color-primary);
+    border-radius: 50px;
+}
+
+/* Similar Jobs */
+.similar-job {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(var(--color-text), 0.1);
+}
+
+.similar-job:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.similar-job h4 {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.similar-job .company {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.similar-job .job-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1rem;
+}
+
+/* Share Buttons */
+.share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.share-buttons .btn {
+    justify-content: flex-start;
+}
+
+.share-buttons i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Badge Styles (same as jobs.css) */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.badge.full-time {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.badge.part-time {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #FF9800;
+}
+
+.badge.contract {
+    background-color: rgba(156, 39, 176, 0.1);
+    color: #9C27B0;
+}
+
+.badge.internship {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: #2196F3;
+}
+
+.badge.remote {
+    background-color: rgba(0, 150, 136, 0.1);
+    color: #009688;
+}
+
+.badge.hybrid {
+    background-color: rgba(255, 87, 34, 0.1);
+    color: #FF5722;
+}
+
+.badge.onsite {
+    background-color: rgba(103, 58, 183, 0.1);
+    color: #673AB7;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .job-details-section {
+        flex-direction: column;
+    }
+    
+    .job-sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .quick-facts, 
+    .required-skills, 
+    .similar-jobs, 
+    .share-job {
+        flex: 1 1 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .job-header-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .company-logo img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .job-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .job-actions {
+        flex-direction: column;
+    }
+    
+    .job-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .job-header-section, 
+    .job-description, 
+    .about-company, 
+    .alumni-connection {
+        padding: 1.5rem;
+    }
+    
+    .job-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .job-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

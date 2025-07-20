@@ -1,0 +1,4 @@
+Group 12:
+Develop an alumni portal that allows former students to register, 
+update their profiles and connect with current students. 
+Include event announcements, job boards and a forum section.
