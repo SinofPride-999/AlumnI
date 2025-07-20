@@ -4,9 +4,9 @@ class Router
 {
     private static array $routes = [];
 
-    public static function handle(string $path, string $filePath): void
+    public static function handle(string $path, $handler): void
     {
-        self::$routes[$path] = $filePath;
+        self::$routes[$path] = $handler;
     }
 
     public static function run(): void
@@ -14,17 +14,27 @@ class Router
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/') ?: '/';
 
         if (isset(self::$routes[$uri])) {
-            $fileToInclude = self::$routes[$uri];
+            $handler = self::$routes[$uri];
             
-            // Convert to absolute path if needed
-            if (!file_exists($fileToInclude)) {
-                $fileToInclude = realpath(__DIR__ . '/../' . ltrim($fileToInclude, '/'));
-            }
+            if (is_callable($handler)) {
+                // If it's a callable, execute it
+                call_user_func($handler);
+            } elseif (is_string($handler)) {
+                // If it's a string, treat it as a file path
+                $fileToInclude = $handler;
+                
+                // Convert to absolute path if needed
+                if (!file_exists($fileToInclude)) {
+                    $fileToInclude = realpath(__DIR__ . '/../' . ltrim($fileToInclude, '/'));
+                }
 
-            if (file_exists($fileToInclude)) {
-                require $fileToInclude;
+                if (file_exists($fileToInclude)) {
+                    require $fileToInclude;
+                } else {
+                    self::error("File not found: $fileToInclude");
+                }
             } else {
-                self::error("File not found: $fileToInclude");
+                self::error("Invalid handler type for route: $uri");
             }
         } else {
             self::notFound();
@@ -41,7 +51,7 @@ class Router
     private static function notFound(): void
     {
         http_response_code(404);
-        echo "<h1>404 Not Found</h1><p>The requested route was not found.</p>";
+        header("Location: /404");
         exit;
     }
 }
