@@ -1,0 +1,51 @@
+AlumnI/
+├── app/
+│   ├── controllers/
+│   │   └── Controller.php
+│   │   └── DashboardController.php
+│   │   └── FindAlumniController.php
+│   │   └── ForgotPasswordController.php
+│   │   └── LoginController.php
+│   │   └── LogoutController.php
+│   │   └── ProfileController.php
+│   │   └── RegisterController.php
+│   │   └── ResetPasswordController.php
+│   ├── traits/
+│   │   └── ProfileCompletionTrait.php
+│   ├── config.php 
+│   ├── Router.php
+│   ├── 
+│   │   
+│   ├── 
+│   │   
+│   └── assets/
+│       └── css/
+│   │   └── images/
+│   │   └── js/
+│   └── database/
+│       ├── seeders/
+│   │   │   └── seed_user.php
+│   └── docs/
+│   └── layouts/
+│       └── app.layout.php
+│   └── pages/
+│       └── auth/
+│       └── dashboard/
+│       └── landing-page.php
+├── config.php
+├── public/
+│   ├── index.php            ← main entry point (like router)
+│   ├── assets/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   └── uploads/
+│       └── profiles/
+├── database/
+│   └── seeders/
+│       └── seed_user.php
+├── make.php                 ← for CLI commands like make:controller
+├── routes/
+│   └── web.php              ← define all route-to-controller mappings here
+├── .htaccess (if using Apache)
+└── README.md

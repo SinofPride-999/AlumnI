@@ -1,31 +1,34 @@
 <?php
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/Controller.php';
 
-class DashboardController {
-    private $pdo;
-
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
-    }
-
+class DashboardController extends Controller {
     public function show() {
         requireAuth();
-
-        // Get user data
-        $stmt = $this->pdo->prepare("SELECT first_name, last_name, email, graduation_year, degree_program FROM users WHERE id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user) {
-            // User not found (shouldn't happen if session is valid)
-            session_destroy();
-            redirect('/login');
+        
+        try {
+            // Get the latest 2 active jobs
+            $stmt = $this->pdo->prepare("
+                SELECT j.*, u.first_name, u.last_name, u.profile_picture 
+                FROM jobs j
+                JOIN users u ON j.user_id = u.id
+                WHERE j.is_active = TRUE
+                ORDER BY j.created_at DESC
+                LIMIT 2
+            ");
+            $stmt->execute();
+            $latestJobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $this->renderView('pages/dashboard/dashboard.view.php', [
+                'latestJobs' => $latestJobs,
+                'current_user_id' => $_SESSION['user_id']
+            ]);
+            
+        } catch (PDOException $e) {
+            error_log("Dashboard error: " . $e->getMessage());
+            // Still render the dashboard even if jobs fail to load
+            $this->renderView('pages/dashboard/dashboard.view.php', [
+                'latestJobs' => []
+            ]);
         }
-
-        // Make user data available to the view
-        $GLOBALS['user'] = $user;
-
-        // Load the dashboard view
-        require __DIR__ . '/../../pages/dashboard/dashboard.view.php';
     }
 }

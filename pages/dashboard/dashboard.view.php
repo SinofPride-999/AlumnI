@@ -11,6 +11,47 @@
     
     <link rel="stylesheet" href="../../assets/css/index.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+      /* Job cards in dashboard */
+      .job-card {
+          background-color: var(--color-card-bg);
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin-bottom: 1rem;
+          box-shadow: var(--shadow);
+      }
+
+      .job-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1rem;
+      }
+
+      .job-header img {
+          width: 50px;
+          height: 50px;
+          border-radius: 8px;
+          object-fit: cover;
+      }
+
+      .job-meta {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1rem;
+      }
+
+      .posted-date {
+          font-size: 0.9rem;
+          opacity: 0.7;
+      }
+
+      .job-actions {
+          display: flex;
+          gap: 1rem;
+      }
+    </style>
 </head>
 <body class="dashboard">
     <!-- Simplified Header -->
@@ -30,8 +71,18 @@
                     </button>
 
                     <div class="user-menu">
+                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
+                        
                         <button class="user-avatar" id="userMenuBtn">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <a href="/profile">
+                                    <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="Profile picture">
+                                </a>
+                            <?php else: ?>
+                                <a href="/profile">
+                                    <img src="https://t3.ftcdn.net/jpg/06/31/16/54/360_F_631165406_6HfMsexCGHstso3udEHJmlFVzdSOevJ5.jpg" alt="Default avatar">
+                                </a>
+                            <?php endif; ?>
                         </button>
                     </div>
 
@@ -54,12 +105,12 @@
                 <h1>Welcome, <span><?= htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8') ?></span></h1>
                 <div class="profile-completion">
                     <div class="completion-message">
-                        <p>Your profile is <strong>75% complete</strong></p>
+                        <p>Your profile is <strong><?= $profileCompletion ?>% complete</strong></p>
                         <div class="completion-bar">
-                            <div class="progress" style="width: 75%"></div>
+                            <div class="progress" style="width: <?= $profileCompletion ?>%"></div>
                         </div>
                     </div>
-                    <a href="profile.html" class="btn btn-primary">Complete Profile</a>
+                    <a href="/profile" class="btn btn-primary">Complete Profile</a>
                 </div>
             </section>
 
@@ -67,19 +118,19 @@
             <section class="quick-actions">
                 <h2 class="section-title">Quick Actions</h2>
                 <div class="action-grid">
-                    <a href="events.html" class="action-card">
+                    <a href="/dashboard" class="action-card">
                         <i class="fas fa-calendar-alt"></i>
                         <span>View Events</span>
                     </a>
-                    <a href="jobs.html" class="action-card">
+                    <a href="/jobs" class="action-card">
                         <i class="fas fa-briefcase"></i>
                         <span>Job Board</span>
                     </a>
-                    <a href="forum.html" class="action-card">
+                    <a href="/forum" class="action-card">
                         <i class="fas fa-comments"></i>
                         <span>Forum</span>
                     </a>
-                    <a href="find-alumni.html" class="action-card">
+                    <a href="/find-alumni" class="action-card">
                         <i class="fas fa-user-plus"></i>
                         <span>Find Alumni</span>
                     </a>
@@ -134,44 +185,52 @@
             <section class="job-postings">
                 <div class="section-header">
                     <h2 class="section-title">Job Opportunities</h2>
-                    <a href="jobs.html" class="view-all">View All</a>
+                    <a href="/jobs" class="view-all">View All</a>
                 </div>
                 
-                <div class="job-card">
-                    <div class="job-header">
-                        <img src="https://logo.clearbit.com/google.com" alt="Google logo">
-                        <div>
-                            <h3>Senior Software Engineer</h3>
-                            <p class="company">Google · Mountain View, CA</p>
+                <?php if (empty($latestJobs)): ?>
+                    <div class="alert alert-info">No recent job postings found.</div>
+                <?php else: ?>
+                    <?php foreach ($latestJobs as $job): ?>
+                        <div class="job-card">
+                            <div class="job-header">
+                                <?php if (!empty($job['profile_picture'])): ?>
+                                    <img src="<?= htmlspecialchars($job['profile_picture']) ?>" alt="Company logo">
+                                <?php else: ?>
+                                    <img src="https://via.placeholder.com/50" alt="Default company logo">
+                                <?php endif; ?>
+                                <div>
+                                    <h3><?= htmlspecialchars($job['title']) ?></h3>
+                                    <p class="company"><?= htmlspecialchars($job['company']) ?> · <?= htmlspecialchars($job['location']) ?></p>
+                                </div>
+                            </div>
+                            <div class="job-meta">
+                                <span class="badge"><?= htmlspecialchars($job['job_type']) ?></span>
+                                <span class="posted-date">Posted <?= time_elapsed_string($job['created_at']) ?></span>
+                            </div>
+                            <div class="job-actions">
+                                <?php if ($job['user_id'] == $current_user_id): ?>
+                                    <!-- Show edit/view for job creator -->
+                                    <a href="/jobs/edit/<?= $job['id'] ?>" class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                <?php else: ?>
+                                    <!-- Show apply button for other users -->
+                                    <?php if (!empty($job['application_url'])): ?>
+                                        <a href="<?= htmlspecialchars($job['application_url']) ?>" class="btn btn-primary" target="_blank">
+                                            <i class="fas fa-paper-plane"></i> Apply
+                                        </a>
+                                    <?php elseif (!empty($job['application_email'])): ?>
+                                        <a href="mailto:<?= htmlspecialchars($job['application_email']) ?>" class="btn btn-primary">
+                                            <i class="fas fa-envelope"></i> Apply
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <a href="/jobs#job-<?= $job['id'] ?>" class="btn btn-text">Details</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="job-meta">
-                        <span class="badge">Full-time</span>
-                        <span class="posted-date">Posted 2 days ago</span>
-                    </div>
-                    <div class="job-actions">
-                        <a href="#" class="btn btn-primary">Apply</a>
-                        <a href="#" class="btn btn-text">Details</a>
-                    </div>
-                </div>
-                
-                <div class="job-card">
-                    <div class="job-header">
-                        <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft logo">
-                        <div>
-                            <h3>Product Manager</h3>
-                            <p class="company">Microsoft · Remote</p>
-                        </div>
-                    </div>
-                    <div class="job-meta">
-                        <span class="badge">Full-time</span>
-                        <span class="posted-date">Posted 1 week ago</span>
-                    </div>
-                    <div class="job-actions">
-                        <a href="#" class="btn btn-primary">Apply</a>
-                        <a href="#" class="btn btn-text">Details</a>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </section>
         </div>
     </main>
@@ -207,3 +266,39 @@
     <script src="../../assets/js/dashboard.js"></script>
 </body>
 </html>
+
+<?php
+function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $weeks = floor($diff->d / 7);  // Calculate weeks separately
+    $diff->d -= $weeks * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+
+    // Inject 'w' into the diff manually
+    $diff_array = (array) $diff;
+    $diff_array['w'] = $weeks;
+
+    foreach ($string as $k => &$v) {
+        if (!empty($diff_array[$k])) {
+            $v = $diff_array[$k] . ' ' . $v . ($diff_array[$k] > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
+}
+?>

@@ -1,20 +1,15 @@
 /* Find Alumni Page Specific Styles */
 .find-alumni-content {
-    padding: 2rem 0 4rem;
+    padding: 2rem 0;
 }
 
 /* Page Header */
 .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1.5rem;
 }
 
 .page-header h1 {
-    font-size: 2.2rem;
+    font-size: 2;
     margin-bottom: 0.5rem;
     color: var(--color-primary);
 }
@@ -25,7 +20,7 @@
 
 /* Search Filters */
 .search-filters {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .search-bar {
@@ -39,10 +34,16 @@
     padding: 0.8rem 1.2rem;
     border: 1px solid rgba(var(--color-text), 0.2);
     border-radius: 50px;
-    background-color: var(--color-bg);
-    color: var(--color-text);
     font-family: 'Poppins', sans-serif;
-    transition: border-color 0.2s ease;
+}
+
+.search-bar button {
+    padding: 0 1.5rem;
+}
+
+.results-header h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
 }
 
 .search-bar input:focus {
@@ -123,13 +124,13 @@
 /* Alumni Grid */
 .alumni-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 .alumni-card {
-    background-color: var(--color-card-bg);
+    background: var(--color-card-bg);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: var(--shadow);
@@ -139,66 +140,55 @@
 .alumni-card:hover {
     transform: translateY(-5px);
 }
-
-.alumni-photo {
-    position: relative;
-    margin-bottom: 1rem;
-}
-
-.alumni-photo img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.connect-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 36px;
-    height: 36px;
+.alumni-avatar {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    margin: 0 auto 1rem;
 }
 
-.connect-btn:hover {
-    transform: scale(1.1);
-}
-
-.connect-btn.connected {
-    background-color: #4CAF50;
-}
-
-.connect-btn.pending {
-    background-color: #FF9800;
+.alumni-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .alumni-info h3 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .alumni-info p {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-    opacity: 0.9;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    opacity: 0.8;
+}
+
+.alumni-actions {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
 }
 
-.alumni-info i {
-    opacity: 0.7;
+.alumni-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
 }
 
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    grid-column: 1 / -1;
+}
+
+.no-results i {
+    font-size: 3rem;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+    display: block;
+}
 .skills {
     display: flex;
     flex-wrap: wrap;
@@ -229,9 +219,8 @@
 .pagination {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 3rem;
+    gap: 0.5rem;
+    margin-top: 2rem;
 }
 
 .page-numbers {
@@ -406,5 +395,30 @@
     
     .form-actions .btn {
         width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .alumni-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    
+    .search-bar {
+        flex-direction: column;
+    }
+    
+    .search-bar input,
+    .search-bar button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .alumni-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header h1 {
+        font-size: 1.8rem;
     }
 }

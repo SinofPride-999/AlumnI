@@ -31,27 +31,44 @@ class Router
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/') ?: '/';
         $method = $_SERVER['REQUEST_METHOD'];
 
-        // Check for direct route match
+        // Exact match
         if (isset(self::$routes[$method][$uri])) {
             self::executeHandler(self::$routes[$method][$uri]);
             return;
         }
 
-        // Handle 404
+        // Pattern matching
+        if (!empty(self::$routes[$method])) {
+          foreach (self::$routes[$method] as $pattern => $handler) {
+            // Replace {param} with named regex
+            $regex = "@^" . preg_replace_callback('/\{(\w+)\}/', function ($matches) {
+                return '(?P<' . $matches[1] . '>[^/]+)';
+            }, $pattern) . "$@";
+
+            if (preg_match($regex, $uri, $matches)) {
+                $params = array_values(array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY));
+                self::executeHandler($handler, $params);
+                return;
+            }
+          }
+        }
+
+        // No match
         self::notFound();
     }
 
-    private static function executeHandler($handler): void
+
+    private static function executeHandler($handler, array $params = []): void
     {
         try {
             if (is_callable($handler)) {
-                call_user_func($handler);
+                call_user_func_array($handler, $params);
             } elseif (is_string($handler) && file_exists($handler)) {
                 require $handler;
             } elseif (is_array($handler) && count($handler) === 2) {
                 [$controller, $method] = $handler;
                 if (method_exists($controller, $method)) {
-                    $controller->$method();
+                    call_user_func_array([$controller, $method], $params);
                 } else {
                     throw new RuntimeException("Method {$method} not found in controller");
                 }
@@ -59,9 +76,10 @@ class Router
                 throw new RuntimeException("Invalid route handler");
             }
         } catch (Exception $e) {
-            self::handleError(500, $e); // Changed to use the renamed method
+            self::handleError(500, $e);
         }
     }
+
 
     private static function notFound(): void
     {

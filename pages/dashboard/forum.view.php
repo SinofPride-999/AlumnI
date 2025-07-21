@@ -19,7 +19,7 @@
         <div class="container">
             <nav>
                 <div class="nav-brand">
-                    <a href="home.html" class="logo">
+                    <a href="/dashboard" class="logo">
                         <i class="fas fa-graduation-cap"></i>
                         <span>AlumnI</span>
                     </a>
@@ -30,10 +30,21 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
+                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
                         <button class="user-avatar" id="userMenuBtn">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="User avatar">
+                            <?php else: ?>
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php endif; ?>
                         </button>
                     </div>
+                    <!-- Logout Button -->
+                    <form action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </div>
             </nav>
         </div>
@@ -48,68 +59,32 @@
                     <h1>Alumni Forum</h1>
                     <p>Connect with fellow alumni, share experiences, and discuss topics of interest</p>
                 </div>
-                <button class="btn btn-primary" id="newTopicBtn">
+                <a href="/forum/new-topic" class="btn btn-primary" id="newTopicBtn">
                     <i class="fas fa-plus"></i> New Topic
-                </button>
+                </a>
             </section>
+
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
 
             <!-- Forum Categories -->
             <section class="forum-categories">
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <div class="category-info">
-                        <h3>Career Discussions</h3>
-                        <p>Share job opportunities, career advice, and professional development tips</p>
-                        <div class="stats">
-                            <span>245 Topics</span>
-                            <span>1.2K Posts</span>
+                <?php foreach ($categories as $category): ?>
+                    <a href="/forum/category/<?= $category['id'] ?>" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-<?= htmlspecialchars($category['icon']) ?>"></i>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <div class="category-info">
-                        <h3>Campus Memories</h3>
-                        <p>Relive your university days and share stories from your time on campus</p>
-                        <div class="stats">
-                            <span>189 Topics</span>
-                            <span>856 Posts</span>
+                        <div class="category-info">
+                            <h3><?= htmlspecialchars($category['name']) ?></h3>
+                            <p><?= htmlspecialchars($category['description']) ?></p>
+                            <div class="stats">
+                                <span><?= $category['topic_count'] ?> Topics</span>
+                                <span><?= $category['post_count'] ?> Posts</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="category-info">
-                        <h3>Class Reunions</h3>
-                        <p>Organize and discuss upcoming class reunions and alumni events</p>
-                        <div class="stats">
-                            <span>76 Topics</span>
-                            <span>324 Posts</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="category-card">
-                    <div class="category-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <div class="category-info">
-                        <h3>Industry Groups</h3>
-                        <p>Connect with alumni in your industry for networking and collaboration</p>
-                        <div class="stats">
-                            <span>132 Topics</span>
-                            <span>587 Posts</span>
-                        </div>
-                    </div>
-                </div>
+                    </a>
+                <?php endforeach; ?>
             </section>
 
             <!-- Recent Discussions -->
@@ -124,182 +99,53 @@
                 </div>
                 
                 <div class="discussion-list">
-                    <!-- Discussion 1 -->
-                    <div class="discussion-card">
-                        <div class="discussion-votes">
-                            <button class="vote-btn upvote">
-                                <i class="fas fa-chevron-up"></i>
-                            </button>
-                            <span class="vote-count">24</span>
-                            <button class="vote-btn downvote">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                        </div>
-                        <div class="discussion-content">
-                            <div class="discussion-header">
-                                <span class="category-badge career">Career</span>
-                                <h3><a href="forum-topic.html">Looking for software engineers at our startup</a></h3>
-                            </div>
-                            <p class="discussion-excerpt">Our alumni-founded startup is hiring! We're looking for 2-3 software engineers with 3+ years experience in JavaScript and React. Competitive salary and equity offered.</p>
-                            <div class="discussion-meta">
-                                <div class="author-info">
-                                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User avatar">
-                                    <span>David Kim</span>
-                                    <span class="graduation">Class of 2015</span>
+                    <?php if (empty($discussions)): ?>
+                        <div class="alert alert-info">No discussions found</div>
+                    <?php else: ?>
+                        <?php foreach ($discussions as $discussion): ?>
+                            <div class="discussion-card">
+                                <div class="discussion-votes">
+                                    <button class="vote-btn upvote">
+                                        <i class="fas fa-chevron-up"></i>
+                                    </button>
+                                    <span class="vote-count">0</span>
+                                    <button class="vote-btn downvote">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
                                 </div>
-                                <div class="post-info">
-                                    <span><i class="far fa-comment"></i> 14 replies</span>
-                                    <span><i class="far fa-eye"></i> 128 views</span>
-                                    <span class="post-time">2 hours ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Discussion 2 -->
-                    <div class="discussion-card">
-                        <div class="discussion-votes">
-                            <button class="vote-btn upvote">
-                                <i class="fas fa-chevron-up"></i>
-                            </button>
-                            <span class="vote-count">18</span>
-                            <button class="vote-btn downvote">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                        </div>
-                        <div class="discussion-content">
-                            <div class="discussion-header">
-                                <span class="category-badge campus">Campus</span>
-                                <h3><a href="forum-topic.html">Remembering Professor Johnson's lectures</a></h3>
-                            </div>
-                            <p class="discussion-excerpt">I was going through my old notes and found some gems from Prof. Johnson's algorithms class. Who else remembers his famous "when in doubt, use a hash table" advice?</p>
-                            <div class="discussion-meta">
-                                <div class="author-info">
-                                    <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User avatar">
-                                    <span>Sarah Chen</span>
-                                    <span class="graduation">Class of 2012</span>
-                                </div>
-                                <div class="post-info">
-                                    <span><i class="far fa-comment"></i> 23 replies</span>
-                                    <span><i class="far fa-eye"></i> 215 views</span>
-                                    <span class="post-time">1 day ago</span>
+                                <div class="discussion-content">
+                                    <div class="discussion-header">
+                                        <span class="category-badge <?= strtolower(str_replace(' ', '-', $discussion['category_name'])) ?>">
+                                            <?= htmlspecialchars($discussion['category_name']) ?>
+                                        </span>
+                                        <h3><a href="/forum/topic/<?= $discussion['id'] ?>"><?= htmlspecialchars($discussion['title']) ?></a></h3>
+                                    </div>
+                                    <p class="discussion-excerpt"><?= htmlspecialchars(substr($discussion['content'], 0, 200)) ?><?= strlen($discussion['content']) > 200 ? '...' : '' ?></p>
+                                    <div class="discussion-meta">
+                                        <div class="author-info">
+                                            <?php if (!empty($discussion['profile_picture'])): ?>
+                                                <img src="<?= htmlspecialchars($discussion['profile_picture']) ?>" alt="User avatar">
+                                            <?php else: ?>
+                                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Default avatar">
+                                            <?php endif; ?>
+                                            <span><?= htmlspecialchars($discussion['first_name'] . ' ' . $discussion['last_name']) ?></span>
+                                            <span class="graduation">Class of <?= htmlspecialchars($discussion['graduation_year'] ?? 'N/A') ?></span>
+                                        </div>
+                                        <div class="post-info">
+                                            <span><i class="far fa-comment"></i> <?= $discussion['reply_count'] ?> replies</span>
+                                            <span><i class="far fa-eye"></i> <?= $discussion['views'] ?> views</span>
+                                            <span class="post-time"><?= time_elapsed_string($discussion['created_at']) ?></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Discussion 3 -->
-                    <div class="discussion-card">
-                        <div class="discussion-votes">
-                            <button class="vote-btn upvote">
-                                <i class="fas fa-chevron-up"></i>
-                            </button>
-                            <span class="vote-count">9</span>
-                            <button class="vote-btn downvote">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                        </div>
-                        <div class="discussion-content">
-                            <div class="discussion-header">
-                                <span class="category-badge industry">Industry</span>
-                                <h3><a href="forum-topic.html">Tech salaries in 2025 - what to expect?</a></h3>
-                            </div>
-                            <p class="discussion-excerpt">With the current market trends, what are people seeing for senior software engineer salaries at FAANG companies? I'm considering a move but want to benchmark properly.</p>
-                            <div class="discussion-meta">
-                                <div class="author-info">
-                                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User avatar">
-                                    <span>Michael Rodriguez</span>
-                                    <span class="graduation">Class of 2018</span>
-                                </div>
-                                <div class="post-info">
-                                    <span><i class="far fa-comment"></i> 7 replies</span>
-                                    <span><i class="far fa-eye"></i> 89 views</span>
-                                    <span class="post-time">2 days ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Discussion 4 -->
-                    <div class="discussion-card">
-                        <div class="discussion-votes">
-                            <button class="vote-btn upvote">
-                                <i class="fas fa-chevron-up"></i>
-                            </button>
-                            <span class="vote-count">32</span>
-                            <button class="vote-btn downvote">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                        </div>
-                        <div class="discussion-content">
-                            <div class="discussion-header">
-                                <span class="category-badge reunion">Reunion</span>
-                                <h3><a href="forum-topic.html">Class of 2015 - 10 Year Reunion Planning</a></h3>
-                            </div>
-                            <p class="discussion-excerpt">Let's start planning our 10 year reunion! Please vote on potential dates and share ideas for activities. I'm thinking a campus tour followed by dinner at the old student center.</p>
-                            <div class="discussion-meta">
-                                <div class="author-info">
-                                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User avatar">
-                                    <span>Jessica Wong</span>
-                                    <span class="graduation">Class of 2015</span>
-                                </div>
-                                <div class="post-info">
-                                    <span><i class="far fa-comment"></i> 41 replies</span>
-                                    <span><i class="far fa-eye"></i> 302 views</span>
-                                    <span class="post-time">3 days ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Discussion 5 -->
-                    <div class="discussion-card">
-                        <div class="discussion-votes">
-                            <button class="vote-btn upvote">
-                                <i class="fas fa-chevron-up"></i>
-                            </button>
-                            <span class="vote-count">5</span>
-                            <button class="vote-btn downvote">
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                        </div>
-                        <div class="discussion-content">
-                            <div class="discussion-header">
-                                <span class="category-badge career">Career</span>
-                                <h3><a href="forum-topic.html">Transitioning from engineering to product management</a></h3>
-                            </div>
-                            <p class="discussion-excerpt">Has anyone made the switch from software engineering to product management? Looking for advice on making the transition and what skills I should focus on developing.</p>
-                            <div class="discussion-meta">
-                                <div class="author-info">
-                                    <img src="https://randomuser.me/api/portraits/men/36.jpg" alt="User avatar">
-                                    <span>Robert Johnson</span>
-                                    <span class="graduation">Class of 2019</span>
-                                </div>
-                                <div class="post-info">
-                                    <span><i class="far fa-comment"></i> 3 replies</span>
-                                    <span><i class="far fa-eye"></i> 76 views</span>
-                                    <span class="post-time">5 days ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
                 
                 <!-- Pagination -->
                 <div class="pagination">
-                    <button class="btn btn-text" disabled>
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </button>
-                    <div class="page-numbers">
-                        <button class="btn btn-text active">1</button>
-                        <button class="btn btn-text">2</button>
-                        <button class="btn btn-text">3</button>
-                        <span>...</span>
-                        <button class="btn btn-text">5</button>
-                    </div>
-                    <button class="btn btn-text">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <a href="/forum" class="btn btn-primary">View All Discussions</a>
                 </div>
             </section>
             
@@ -307,47 +153,27 @@
             <section class="popular-alumni">
                 <h2 class="section-title">Popular Alumni Contributors</h2>
                 <div class="alumni-grid">
-                    <div class="alumni-card">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Alumni photo">
-                        <h3>Dr. Angela Smith</h3>
-                        <p class="graduation">Class of 2010 · Computer Science</p>
-                        <p class="current">Professor at Stanford University</p>
-                        <div class="stats">
-                            <span>142 Posts</span>
-                            <span>2.4K Likes</span>
-                        </div>
-                        <button class="btn btn-text">
-                            <i class="fas fa-user-plus"></i> Connect
-                        </button>
-                    </div>
-                    
-                    <div class="alumni-card">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Alumni photo">
-                        <h3>Mark Williams</h3>
-                        <p class="graduation">Class of 2008 · Business</p>
-                        <p class="current">CEO at GreenTech Solutions</p>
-                        <div class="stats">
-                            <span>98 Posts</span>
-                            <span>1.8K Likes</span>
-                        </div>
-                        <button class="btn btn-text">
-                            <i class="fas fa-user-plus"></i> Connect
-                        </button>
-                    </div>
-                    
-                    <div class="alumni-card">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Alumni photo">
-                        <h3>Priya Patel</h3>
-                        <p class="graduation">Class of 2015 · Electrical Engineering</p>
-                        <p class="current">Senior Engineer at Tesla</p>
-                        <div class="stats">
-                            <span>76 Posts</span>
-                            <span>1.2K Likes</span>
-                        </div>
-                        <button class="btn btn-text">
-                            <i class="fas fa-user-plus"></i> Connect
-                        </button>
-                    </div>
+                    <?php if (empty($popularAlumni)): ?>
+                        <div class="alert alert-info">No active contributors yet</div>
+                    <?php else: ?>
+                        <?php foreach ($popularAlumni as $alumni): ?>
+                            <div class="alumni-card">
+                                <?php if (!empty($alumni['profile_picture'])): ?>
+                                    <img src="<?= htmlspecialchars($alumni['profile_picture']) ?>" alt="Alumni photo">
+                                <?php else: ?>
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Default alumni photo">
+                                <?php endif; ?>
+                                <h3><?= htmlspecialchars($alumni['first_name'] . ' ' . $alumni['last_name']) ?></h3>
+                                <p class="graduation">Class of <?= htmlspecialchars($alumni['graduation_year']) ?> · <?= htmlspecialchars($alumni['degree_program']) ?></p>
+                                <div class="stats">
+                                    <span><?= $alumni['topic_count'] + $alumni['post_count'] ?> Contributions</span>
+                                </div>
+                                <button class="btn btn-text">
+                                    <i class="fas fa-user-plus"></i> Connect
+                                </button>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </section>
         </div>
@@ -365,10 +191,10 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                        <li><a href="/find-alumni">Find Alumni</a></li>
+                        <li><a href="/forum">Forum</a></li>
                     </ul>
                 </div>
             </div>
@@ -379,49 +205,44 @@
         </div>
     </footer>
 
-    <!-- New Topic Modal -->
-    <div class="modal" id="newTopicModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create New Discussion</h2>
-                <button class="close-btn" id="closeModalBtn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="newTopicForm">
-                    <div class="form-group">
-                        <label for="topic-title">Topic Title</label>
-                        <input type="text" id="topic-title" placeholder="What's your discussion about?" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="topic-category">Category</label>
-                        <select id="topic-category" required>
-                            <option value="">Select a category</option>
-                            <option value="career">Career Discussions</option>
-                            <option value="campus">Campus Memories</option>
-                            <option value="reunion">Class Reunions</option>
-                            <option value="industry">Industry Groups</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="topic-content">Discussion Content</label>
-                        <textarea id="topic-content" rows="6" placeholder="Write your post here..." required></textarea>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-text" id="cancelTopicBtn">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Post Discussion</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript -->
     <script src="../../assets/js/index.js"></script>
     <script src="../../assets/js/forum.js"></script>
 </body>
 </html>
+
+<?php
+function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $weeks = floor($diff->d / 7);  // Calculate weeks separately
+    $diff->d -= $weeks * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+
+    // Inject 'w' into the diff manually
+    $diff_array = (array) $diff;
+    $diff_array['w'] = $weeks;
+
+    foreach ($string as $k => &$v) {
+        if (!empty($diff_array[$k])) {
+            $v = $diff_array[$k] . ' ' . $v . ($diff_array[$k] > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
+}
+?>

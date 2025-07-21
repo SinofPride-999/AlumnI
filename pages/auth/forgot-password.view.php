@@ -42,13 +42,13 @@
                 </div>
                 
                 <?php if (isset($success) && $success): ?>
-                    <div class="alert alert-success">
+                    <div class="alert alert-success" style="margin-bottom: 1rem;">
                         <p>Your reset code: <strong><?= $_SESSION['reset_code_display'] ?></strong></p>
                         <p>Use this code on the <a href="/reset-password">reset page</a> to change your password.</p>
                     </div>
                 <?php endif; ?>
                 
-                <form method="POST" action="/forgot-password">
+                <form class="auth-form" method="POST" action="/forgot-password">
                     <div class="form-group floating">
                         <input type="email" name="email" required>
                         <label>Email Address</label>

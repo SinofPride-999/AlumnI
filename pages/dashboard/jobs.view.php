@@ -19,7 +19,7 @@
         <div class="container">
             <nav>
                 <div class="nav-brand">
-                    <a href="home.html" class="logo">
+                    <a href="/dashboard" class="logo">
                         <i class="fas fa-graduation-cap"></i>
                         <span>AlumnI</span>
                     </a>
@@ -30,10 +30,21 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
+                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
                         <button class="user-avatar" id="userMenuBtn">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="User avatar">
+                            <?php else: ?>
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php endif; ?>
                         </button>
                     </div>
+                    <!-- Logout Button -->
+                    <form action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </div>
             </nav>
         </div>
@@ -50,53 +61,46 @@
 
             <!-- Job Search Filters -->
             <section class="job-filters">
-                <div class="search-bar">
-                    <input type="text" placeholder="Search for jobs, companies, or keywords">
-                    <button class="btn btn-primary">
+                <form method="get" action="/jobs" class="search-bar">
+                    <input type="text" name="search" placeholder="Search for jobs, companies, or keywords" 
+                           value="<?= htmlspecialchars($search ?? '') ?>">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-search"></i> Search
                     </button>
-                </div>
+                </form>
                 
-                <div class="filter-options">
+                <form method="get" action="/jobs" class="filter-options">
                     <div class="filter-group">
-                        <label for="job-type">Job Type:</label>
-                        <select id="job-type">
-                            <option value="">All Types</option>
-                            <option value="full-time">Full-time</option>
-                            <option value="part-time">Part-time</option>
-                            <option value="contract">Contract</option>
-                            <option value="internship">Internship</option>
-                            <option value="remote">Remote</option>
+                        <label for="category">Category:</label>
+                        <select id="category" name="category">
+                            <option value="">All Categories</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= htmlspecialchars($cat) ?>" 
+                                    <?= ($category ?? '') === $cat ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($cat) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label for="industry">Industry:</label>
-                        <select id="industry">
-                            <option value="">All Industries</option>
-                            <option value="technology">Technology</option>
-                            <option value="finance">Finance</option>
-                            <option value="healthcare">Healthcare</option>
-                            <option value="education">Education</option>
-                            <option value="engineering">Engineering</option>
+                        <label for="technology">Technology:</label>
+                        <select id="technology" name="technology">
+                            <option value="">All Technologies</option>
+                            <?php foreach ($technologies as $tech): ?>
+                                <option value="<?= htmlspecialchars($tech) ?>" 
+                                    <?= ($technology ?? '') === $tech ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tech) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     
-                    <div class="filter-group">
-                        <label for="experience">Experience Level:</label>
-                        <select id="experience">
-                            <option value="">All Levels</option>
-                            <option value="entry">Entry Level</option>
-                            <option value="mid">Mid Level</option>
-                            <option value="senior">Senior Level</option>
-                            <option value="executive">Executive</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn btn-secondary" id="resetFilters">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="/jobs" class="btn btn-secondary" id="resetFilters">
                         <i class="fas fa-sync-alt"></i> Reset
-                    </button>
-                </div>
+                    </a>
+                </form>
             </section>
 
             <!-- Job Listings -->
@@ -104,239 +108,102 @@
                 <div class="listings-header">
                     <h2 class="section-title">Available Positions</h2>
                     <div class="sort-options">
-                        <label for="sort-by">Sort by:</label>
-                        <select id="sort-by">
-                            <option value="newest">Newest First</option>
-                            <option value="relevance">Relevance</option>
-                            <option value="deadline">Application Deadline</option>
-                        </select>
+                        <a href="/jobs/create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Post a Job
+                        </a>
                     </div>
                 </div>
                 
-                <div class="job-list">
-                    <!-- Job Listing 1 -->
-                    <div class="job-listing">
-                        <div class="job-header">
-                            <img src="https://logo.clearbit.com/google.com" alt="Google logo">
-                            <div class="job-title">
-                                <h3>Senior Software Engineer</h3>
-                                <p class="company">Google · Mountain View, CA</p>
-                                <div class="job-meta">
-                                    <span class="badge full-time">Full-time</span>
-                                    <span class="badge remote">Remote</span>
+                <?php if (isset($error)): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                <?php elseif (empty($jobs)): ?>
+                    <div class="alert alert-info">No jobs found matching your criteria.</div>
+                <?php else: ?>
+                    <div class="job-list">
+                        <?php foreach ($jobs as $job): ?>
+                            <div class="job-listing">
+                                <div class="job-header">
+                                    <?php if (!empty($job['profile_picture'])): ?>
+                                        <img src="<?= htmlspecialchars($job['profile_picture']) ?>" alt="User profile picture">
+                                    <?php else: ?>
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Default profile picture">
+                                    <?php endif; ?>
+                                    <div class="job-title">
+                                        <h3><?= htmlspecialchars($job['title']) ?></h3>
+                                        <p class="company"><?= htmlspecialchars($job['company']) ?> · <?= htmlspecialchars($job['location']) ?></p>
+                                        <div class="job-meta">
+                                            <span class="badge <?= strtolower(str_replace(' ', '-', $job['job_type'])) ?>">
+                                                <?= htmlspecialchars($job['job_type']) ?>
+                                            </span>
+                                            <span class="badge <?= strtolower($job['category']) ?>">
+                                                <?= htmlspecialchars($job['category']) ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="job-description">
+                                    <p><?= nl2br(htmlspecialchars($job['description'])) ?></p>
+                                    <?php if (!empty($job['requirements'])): ?>
+                                        <h5>Requirements:</h5>
+                                        <p><?= nl2br(htmlspecialchars($job['requirements'])) ?></p>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($job['technologies'])): ?>
+                                        <div class="skills">
+                                            <?php 
+                                            $techs = explode(',', $job['technologies']);
+                                            foreach ($techs as $tech): 
+                                                $tech = trim($tech);
+                                                if (!empty($tech)):
+                                            ?>
+                                                <span class="skill-tag"><?= htmlspecialchars($tech) ?></span>
+                                            <?php 
+                                                endif;
+                                            endforeach; 
+                                            ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="job-footer">
+                                    <div class="job-posted">
+                                        <i class="fas fa-clock"></i> 
+                                        Posted <?= time_elapsed_string($job['created_at']) ?> by 
+                                        <?= htmlspecialchars($job['first_name'] . ' ' . $job['last_name']) ?>
+                                        <?php if (!empty($job['salary_range'])): ?>
+                                            <span class="salary"> | Salary: <?= htmlspecialchars($job['salary_range']) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="job-actions">
+                                      <?php if ($job['user_id'] == $current_user_id): ?>
+                                          <!-- Show edit and delete for job creator -->
+                                          <a href="/jobs/edit/<?= $job['id'] ?>" class="btn btn-primary">
+                                              <i class="fas fa-edit"></i> Edit
+                                          </a>
+                                          <form action="/jobs/delete/<?= $job['id'] ?>" method="POST" style="display: inline;">
+                                              <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this job posting?')">
+                                                  <i class="fas fa-trash"></i> Delete
+                                              </button>
+                                          </form>
+                                      <?php else: ?>
+                                          <!-- Show apply button for other users -->
+                                          <?php if (!empty($job['application_url'])): ?>
+                                              <a href="<?= htmlspecialchars($job['application_url']) ?>" class="btn btn-primary" target="_blank">
+                                                  <i class="fas fa-paper-plane"></i> Apply Now
+                                              </a>
+                                          <?php elseif (!empty($job['application_email'])): ?>
+                                              <a href="mailto:<?= htmlspecialchars($job['application_email']) ?>" class="btn btn-primary">
+                                                  <i class="fas fa-envelope"></i> Apply via Email
+                                              </a>
+                                          <?php endif; ?>
+                                      <?php endif; ?>
+                                  </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="job-description">
-                            <p>We're looking for a senior software engineer to join our team working on cutting-edge cloud technologies. The ideal candidate will have 5+ years of experience with distributed systems and a strong background in algorithms.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Java</span>
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">Cloud Computing</span>
-                                <span class="skill-tag">Distributed Systems</span>
-                            </div>
-                        </div>
-                        
-                        <div class="job-footer">
-                            <div class="job-posted">
-                                <i class="fas fa-clock"></i> Posted 2 days ago
-                                <span class="deadline">Apply by: June 30, 2025</span>
-                            </div>
-                            <div class="job-actions">
-                                <button class="btn btn-primary apply-btn">Apply Now</button>
-                                <button class="btn btn-text save-btn">
-                                    <i class="far fa-bookmark"></i> Save
-                                </button>
-                                <a href="job-detail.html" class="btn btn-text">View Details</a>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
-                    
-                    <!-- Job Listing 2 -->
-                    <div class="job-listing">
-                        <div class="job-header">
-                            <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft logo">
-                            <div class="job-title">
-                                <h3>Product Manager</h3>
-                                <p class="company">Microsoft · Redmond, WA</p>
-                                <div class="job-meta">
-                                    <span class="badge full-time">Full-time</span>
-                                    <span class="badge hybrid">Hybrid</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="job-description">
-                            <p>Join our Office 365 team as a Product Manager to drive the vision and execution of productivity features used by millions worldwide. Ideal candidates will have experience in SaaS products and strong analytical skills.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Product Management</span>
-                                <span class="skill-tag">SaaS</span>
-                                <span class="skill-tag">Agile</span>
-                                <span class="skill-tag">User Research</span>
-                            </div>
-                        </div>
-                        
-                        <div class="job-footer">
-                            <div class="job-posted">
-                                <i class="fas fa-clock"></i> Posted 1 week ago
-                                <span class="deadline">Apply by: July 15, 2025</span>
-                            </div>
-                            <div class="job-actions">
-                                <button class="btn btn-primary apply-btn">Apply Now</button>
-                                <button class="btn btn-text save-btn">
-                                    <i class="far fa-bookmark"></i> Save
-                                </button>
-                                <a href="job-detail.html" class="btn btn-text">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Job Listing 3 -->
-                    <div class="job-listing">
-                        <div class="job-header">
-                            <img src="https://logo.clearbit.com/goldmansachs.com" alt="Goldman Sachs logo">
-                            <div class="job-title">
-                                <h3>Financial Analyst</h3>
-                                <p class="company">Goldman Sachs · New York, NY</p>
-                                <div class="job-meta">
-                                    <span class="badge full-time">Full-time</span>
-                                    <span class="badge onsite">On-site</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="job-description">
-                            <p>The Investment Banking Division is looking for a Financial Analyst to join our team. You'll work on complex financial transactions, including mergers, acquisitions, and capital raising for our clients.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Financial Modeling</span>
-                                <span class="skill-tag">Valuation</span>
-                                <span class="skill-tag">Excel</span>
-                                <span class="skill-tag">Investment Banking</span>
-                            </div>
-                        </div>
-                        
-                        <div class="job-footer">
-                            <div class="job-posted">
-                                <i class="fas fa-clock"></i> Posted 3 days ago
-                                <span class="deadline">Apply by: July 10, 2025</span>
-                            </div>
-                            <div class="job-actions">
-                                <button class="btn btn-primary apply-btn">Apply Now</button>
-                                <button class="btn btn-text save-btn">
-                                    <i class="far fa-bookmark"></i> Save
-                                </button>
-                                <a href="job-detail.html" class="btn btn-text">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Job Listing 4 -->
-                    <div class="job-listing">
-                        <div class="job-header">
-                            <img src="https://logo.clearbit.com/startup.com" alt="Startup Company logo">
-                            <div class="job-title">
-                                <h3>UX/UI Designer</h3>
-                                <p class="company">TechStart Inc. · Remote</p>
-                                <div class="job-meta">
-                                    <span class="badge contract">Contract</span>
-                                    <span class="badge remote">Remote</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="job-description">
-                            <p>We're a fast-growing startup looking for a talented UX/UI Designer to help shape our product experience. You'll work closely with our product and engineering teams to create intuitive, beautiful interfaces.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Figma</span>
-                                <span class="skill-tag">User Research</span>
-                                <span class="skill-tag">Prototyping</span>
-                                <span class="skill-tag">UI Design</span>
-                            </div>
-                        </div>
-                        
-                        <div class="job-footer">
-                            <div class="job-posted">
-                                <i class="fas fa-clock"></i> Posted 5 days ago
-                                <span class="deadline">Apply by: July 20, 2025</span>
-                            </div>
-                            <div class="job-actions">
-                                <button class="btn btn-primary apply-btn">Apply Now</button>
-                                <button class="btn btn-text save-btn">
-                                    <i class="far fa-bookmark"></i> Save
-                                </button>
-                                <a href="job-detail.html" class="btn btn-text">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Job Listing 5 -->
-                    <div class="job-listing">
-                        <div class="job-header">
-                            <img src="https://logo.clearbit.com/ibm.com" alt="IBM logo">
-                            <div class="job-title">
-                                <h3>Data Scientist</h3>
-                                <p class="company">IBM · Austin, TX</p>
-                                <div class="job-meta">
-                                    <span class="badge full-time">Full-time</span>
-                                    <span class="badge hybrid">Hybrid</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="job-description">
-                            <p>Join our AI Research team to develop innovative machine learning solutions for enterprise clients. You'll work with large datasets to build predictive models and deliver actionable insights.</p>
-                            <div class="skills">
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">Machine Learning</span>
-                                <span class="skill-tag">TensorFlow</span>
-                                <span class="skill-tag">Data Visualization</span>
-                            </div>
-                        </div>
-                        
-                        <div class="job-footer">
-                            <div class="job-posted">
-                                <i class="fas fa-clock"></i> Posted 2 weeks ago
-                                <span class="deadline">Apply by: July 5, 2025</span>
-                            </div>
-                            <div class="job-actions">
-                                <button class="btn btn-primary apply-btn">Apply Now</button>
-                                <button class="btn btn-text save-btn">
-                                    <i class="far fa-bookmark"></i> Save
-                                </button>
-                                <a href="job-detail.html" class="btn btn-text">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Pagination -->
-                <div class="pagination">
-                    <button class="btn btn-text" disabled>
-                        <i class="fas fa-chevron-left"></i> Previous
-                    </button>
-                    <div class="page-numbers">
-                        <button class="btn btn-text active">1</button>
-                        <button class="btn btn-text">2</button>
-                        <button class="btn btn-text">3</button>
-                        <span>...</span>
-                        <button class="btn btn-text">5</button>
-                    </div>
-                    <button class="btn btn-text">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </section>
-            
-            <!-- Post Job CTA -->
-            <section class="post-job-cta">
-                <div class="cta-content">
-                    <h2>Have a job to post?</h2>
-                    <p>Reach thousands of qualified alumni candidates by posting your opportunity on our job board.</p>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Post a Job
-                    </button>
-                </div>
+                <?php endif; ?>
             </section>
         </div>
     </main>
@@ -353,10 +220,10 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/profile">Profile</a></li>
+                        <li><a href="/find-alumni">Find Alumni</a></li>
+                        <li><a href="/jobs">Job Board</a></li>
                     </ul>
                 </div>
             </div>
@@ -372,3 +239,39 @@
     <script src="../../assets/js/jobs.js"></script>
 </body>
 </html>
+
+<?php
+function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $weeks = floor($diff->d / 7);  // Calculate weeks separately
+    $diff->d -= $weeks * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+
+    // Inject 'w' into the diff manually
+    $diff_array = (array) $diff;
+    $diff_array['w'] = $weeks;
+
+    foreach ($string as $k => &$v) {
+        if (!empty($diff_array[$k])) {
+            $v = $diff_array[$k] . ' ' . $v . ($diff_array[$k] > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
+}
+?>

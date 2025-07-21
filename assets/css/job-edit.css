@@ -1,0 +1,32 @@
+/* Button styles */
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* Job actions */
+.job-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.job-actions form {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .job-actions {
+        flex-direction: column;
+    }
+    
+    .job-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
