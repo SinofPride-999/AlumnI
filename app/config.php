@@ -18,6 +18,8 @@ session_name(SESSION_NAME);
 session_set_cookie_params(SESSION_LIFETIME, '/');
 session_start();
 
+define('DEBUG_MODE', true); // Set to false in production
+
 // Database connection
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USERNAME, DB_PASSWORD);

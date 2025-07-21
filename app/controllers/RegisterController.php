@@ -89,8 +89,8 @@ class RegisterController {
             $_SESSION['user_email'] = $email;
             $_SESSION['user_name'] = $firstName . ' ' . $lastName;
 
-            // Redirect to dashboard
-            redirect('/dashboard');
+            // Redirect to login
+            redirect('/login');
         }
 
         // If there are errors, pass them back to the view

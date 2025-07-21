@@ -3,55 +3,89 @@
 class Router
 {
     private static array $routes = [];
+    private static array $errorHandlers = [];
 
-    public static function handle(string $path, $handler): void
+    public static function handle(string $path, $handler, string $method = 'GET'): void
     {
-        self::$routes[$path] = $handler;
+        self::$routes[$method][$path] = $handler;
+    }
+
+    public static function get(string $path, $handler): void
+    {
+        self::handle($path, $handler, 'GET');
+    }
+
+    public static function post(string $path, $handler): void
+    {
+        self::handle($path, $handler, 'POST');
+    }
+
+    // Renamed this to setErrorHandler to avoid conflict
+    public static function setErrorHandler(int $code, callable $handler): void
+    {
+        self::$errorHandlers[$code] = $handler;
     }
 
     public static function run(): void
     {
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/') ?: '/';
+        $method = $_SERVER['REQUEST_METHOD'];
 
-        if (isset(self::$routes[$uri])) {
-            $handler = self::$routes[$uri];
-            
-            if (is_callable($handler)) {
-                // If it's a callable, execute it
-                call_user_func($handler);
-            } elseif (is_string($handler)) {
-                // If it's a string, treat it as a file path
-                $fileToInclude = $handler;
-                
-                // Convert to absolute path if needed
-                if (!file_exists($fileToInclude)) {
-                    $fileToInclude = realpath(__DIR__ . '/../' . ltrim($fileToInclude, '/'));
-                }
-
-                if (file_exists($fileToInclude)) {
-                    require $fileToInclude;
-                } else {
-                    self::error("File not found: $fileToInclude");
-                }
-            } else {
-                self::error("Invalid handler type for route: $uri");
-            }
-        } else {
-            self::notFound();
+        // Check for direct route match
+        if (isset(self::$routes[$method][$uri])) {
+            self::executeHandler(self::$routes[$method][$uri]);
+            return;
         }
+
+        // Handle 404
+        self::notFound();
     }
 
-    private static function error(string $message): void
+    private static function executeHandler($handler): void
     {
-        http_response_code(500);
-        echo "<h1>Router Error</h1><p>$message</p>";
-        exit;
+        try {
+            if (is_callable($handler)) {
+                call_user_func($handler);
+            } elseif (is_string($handler) && file_exists($handler)) {
+                require $handler;
+            } elseif (is_array($handler) && count($handler) === 2) {
+                [$controller, $method] = $handler;
+                if (method_exists($controller, $method)) {
+                    $controller->$method();
+                } else {
+                    throw new RuntimeException("Method {$method} not found in controller");
+                }
+            } else {
+                throw new RuntimeException("Invalid route handler");
+            }
+        } catch (Exception $e) {
+            self::handleError(500, $e); // Changed to use the renamed method
+        }
     }
 
     private static function notFound(): void
     {
-        http_response_code(404);
-        header("Location: /404");
+        if (isset(self::$errorHandlers[404])) {
+            self::executeHandler(self::$errorHandlers[404]);
+        } else {
+            http_response_code(404);
+            echo "<h1>404 Not Found</h1>";
+        }
+        exit;
+    }
+
+    // Renamed this from error() to handleError() to avoid conflict
+    private static function handleError(int $code, Exception $e): void
+    {
+        if (isset(self::$errorHandlers[$code])) {
+            self::executeHandler(self::$errorHandlers[$code]);
+        } else {
+            http_response_code($code);
+            echo "<h1>{$code} Server Error</h1>";
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                echo "<pre>{$e->getMessage()}</pre>";
+            }
+        }
         exit;
     }
 }

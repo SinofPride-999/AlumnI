@@ -51,7 +51,7 @@
         <div class="container">
             <!-- Welcome Section -->
             <section class="welcome-section">
-                <h1>Welcome back, <span>John</span></h1>
+                <h1>Welcome, <span><?= htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8') ?></span></h1>
                 <div class="profile-completion">
                     <div class="completion-message">
                         <p>Your profile is <strong>75% complete</strong></p>

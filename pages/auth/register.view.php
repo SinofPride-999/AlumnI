@@ -42,7 +42,7 @@
                     <p>Create an account to reconnect with your alma mater</p>
                 </div>
                 
-                <form class="auth-form" id="registerForm" method="POST" action="/register/post">
+                <form class="auth-form" id="registerForm" method="POST" action="/register">
                     <?php if (isset($errors['general'])): ?>
                         <div class="alert alert-error">
                             <?php echo htmlspecialchars($errors['general']); ?>

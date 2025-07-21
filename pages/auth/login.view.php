@@ -26,7 +26,7 @@
                   <button class="theme-toggle" id="themeToggle">
                       <i class="fas fa-moon"></i>
                   </button>
-                  <a href="" class="btn btn-secondary">Register</a>
+                  <a href="/register" class="btn btn-secondary">Register</a>
               </div>
           </nav>
       </div>
@@ -42,7 +42,7 @@
                     <p>Sign in to reconnect with your alumni network</p>
                 </div>
                 
-                <form class="auth-form" id="loginForm" method="POST" action="/login/post">
+                <form class="auth-form" id="loginForm" method="POST" action="/login">
                     <?php if (isset($errors['login'])): ?>
                         <div class="alert alert-error">
                             <?php echo htmlspecialchars($errors['login']); ?>
@@ -72,7 +72,7 @@
                             <input type="checkbox" id="rememberMe" name="rememberMe">
                             <label for="rememberMe">Remember me</label>
                         </div>
-                        <a href="#" class="forgot-password">Forgot password?</a>
+                        <a href="/forgot-password" class="forgot-password">Forgot password?</a>
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-block">
