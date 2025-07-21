@@ -48,34 +48,72 @@
                     <?php unset($_SESSION['reset_success']); ?>
                 <?php endif; ?>
                 
-                <form method="POST" action="/reset-password">
+                <form class="auth-form" id="resetPasswordForm" method="POST" action="/reset-password">
+                    <?php if (isset($errors['general'])): ?>
+                        <div class="alert alert-error">
+                            <?php echo htmlspecialchars($errors['general']); ?>
+                        </div>
+                    <?php endif; ?>
+                    
                     <div class="form-group floating">
-                        <input type="email" name="email" required value="<?= $_SESSION['reset_email'] ?? '' ?>">
-                        <label>Your Email</label>
+                        <input type="email" id="resetEmail" name="email" required value="<?= htmlspecialchars($_SESSION['reset_email'] ?? '') ?>">
+                        <label for="resetEmail">Your Email</label>
+                        <i class="fas fa-envelope icon"></i>
                         <?php if (isset($errors['email'])): ?>
-                            <span class="error-message"><?= $errors['email'] ?></span>
+                            <span class="error-message"><?= htmlspecialchars($errors['email']) ?></span>
                         <?php endif; ?>
                     </div>
                     
                     <div class="form-group floating">
-                        <input type="text" name="code" required placeholder="Enter the 6-digit code">
-                        <label>Reset Code</label>
+                        <input type="text" id="resetCode" name="code" required>
+                        <label for="resetCode">Reset Code</label>
+                        <i class="fas fa-key icon"></i>
                         <?php if (isset($errors['code'])): ?>
-                            <span class="error-message"><?= $errors['code'] ?></span>
+                            <span class="error-message"><?= htmlspecialchars($errors['code']) ?></span>
                         <?php endif; ?>
+                    </div>
+                    
+                    <div class="form-group floating password-group">
+                        <input type="password" id="newPassword" name="password" required>
+                        <label for="newPassword">New Password</label>
+                        <i class="fas fa-lock icon"></i>
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <?php if (isset($errors['password'])): ?>
+                            <span class="error-message"><?= htmlspecialchars($errors['password']) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="password-strength">
+                        <div class="strength-meter">
+                            <span class="strength-bar"></span>
+                            <span class="strength-bar"></span>
+                            <span class="strength-bar"></span>
+                        </div>
+                        <span class="strength-text">Password strength</span>
                     </div>
                     
                     <div class="form-group floating">
-                        <input type="password" name="password" required>
-                        <label>New Password</label>
-                        <?php if (isset($errors['password'])): ?>
-                            <span class="error-message"><?= $errors['password'] ?></span>
+                        <input type="password" id="confirmNewPassword" name="confirmPassword" required>
+                        <label for="confirmNewPassword">Confirm Password</label>
+                        <i class="fas fa-lock icon"></i>
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <?php if (isset($errors['confirmPassword'])): ?>
+                            <span class="error-message"><?= htmlspecialchars($errors['confirmPassword']) ?></span>
                         <?php endif; ?>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">
-                        Reset Password
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>Reset Password</span>
+                        <i class="fas fa-key"></i>
                     </button>
+                    
+                    <div class="auth-footer">
+                        <p>Remember your password? <a href="/login">Sign in here</a></p>
+                    </div>
                 </form>
             </div>
         </div>

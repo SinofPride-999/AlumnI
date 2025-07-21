@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Password strength indicator (for register page)
+    // Password strength indicator for register page
     const passwordInput = document.getElementById('registerPassword');
     if (passwordInput) {
         passwordInput.addEventListener('input', function() {
@@ -64,6 +64,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 strengthBars[2].style.backgroundColor = 'var(--color-secondary)';
                 strengthText.textContent = 'Strong';
             }
+        });
+    }
+
+    // Password strength indicator for reset password form
+    const resetPasswordInput = document.getElementById('newPassword');
+    if (resetPasswordInput) {
+        resetPasswordInput.addEventListener('input', function() {
+            const strengthBars = this.closest('form').querySelectorAll('.strength-bar');
+            const strengthText = this.closest('form').querySelector('.strength-text');
+            const password = this.value;
+            
+            // Reset
+            strengthBars.forEach(bar => {
+                bar.style.backgroundColor = 'rgba(var(--color-text), 0.1)';
+            });
+            
+            if (password.length === 0) {
+                strengthText.textContent = 'Password strength';
+                return;
+            }
+            
+            // Very weak (just length)
+            if (password.length < 6) {
+                strengthBars[0].style.backgroundColor = 'var(--color-primary)';
+                strengthText.textContent = 'Very weak';
+                return;
+            }
+            
+            // Weak (length + lowercase)
+            if (/[a-z]/.test(password)) {
+                strengthBars[0].style.backgroundColor = 'var(--color-primary)';
+                strengthBars[1].style.backgroundColor = 'var(--color-primary)';
+                strengthText.textContent = 'Weak';
+            }
+            
+            // Medium (length + lowercase + uppercase/number)
+            if (/[A-Z]/.test(password) || /[0-9]/.test(password)) {
+                strengthBars[0].style.backgroundColor = 'var(--color-primary)';
+                strengthBars[1].style.backgroundColor = 'var(--color-primary)';
+                strengthBars[2].style.backgroundColor = 'var(--color-primary)';
+                strengthText.textContent = 'Medium';
+            }
+            
+            // Strong (length + lowercase + uppercase + number + special)
+            if (/[^A-Za-z0-9]/.test(password)) {
+                strengthBars[0].style.backgroundColor = 'var(--color-secondary)';
+                strengthBars[1].style.backgroundColor = 'var(--color-secondary)';
+                strengthBars[2].style.backgroundColor = 'var(--color-secondary)';
+                strengthText.textContent = 'Strong';
+            }
+        });
+    }
+    
+    // Loading spinner for reset password form
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    if (resetPasswordForm) {
+        resetPasswordForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
         });
     }
     
