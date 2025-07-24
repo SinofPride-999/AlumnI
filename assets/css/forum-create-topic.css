@@ -1,53 +1,68 @@
-/* Forum Create Topic Specific Styles */
+/* Enhanced Form Styles */
 .forum-form-container {
     background-color: var(--color-card-bg);
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 16px;
+    padding: 2.5rem;
     box-shadow: var(--shadow);
     margin-top: 2rem;
+    border: 1px solid rgba(var(--color-text), 0.05);
 }
 
 .forum-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
+    position: relative;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     font-weight: 500;
     color: var(--color-text);
+    font-size: 0.95rem;
 }
 
 .form-control {
     width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid rgba(var(--color-text), 0.2);
-    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(var(--color-text), 0.15);
+    border-radius: 10px;
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: 'Poppins', sans-serif;
-    transition: border-color 0.2s ease;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.2);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.1);
 }
 
 textarea.form-control {
-    min-height: 200px;
+    min-height: 250px;
     resize: vertical;
+    line-height: 1.6;
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2308A4BD' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
 }
 
 .form-group.has-error .form-control {
     border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.03);
 }
 
 .error-message {
@@ -55,24 +70,95 @@ textarea.form-control {
     font-size: 0.85rem;
     margin-top: 0.5rem;
     display: block;
+    padding-left: 0.5rem;
 }
 
 .form-actions {
     display: flex;
     justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.btn-create {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Floating label effect */
+.floating-label-group {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.floating-label {
+    position: absolute;
+    top: -0.75rem;
+    left: 1rem;
+    background-color: var(--color-card-bg);
+    padding: 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    z-index: 1;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .forum-form-container {
-        padding: 1.5rem;
+        padding: 1.75rem;
     }
     
     .form-actions {
         justify-content: center;
     }
     
-    .btn {
+    .btn-create {
         width: 100%;
     }
+}
+
+/* Character counter */
+.char-counter {
+    font-size: 0.8rem;
+    text-align: right;
+    color: rgba(var(--color-text), 0.6);
+    margin-top: 0.25rem;
+}
+
+/* Preview toggle */
+.preview-toggle {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.preview-toggle button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Content preview area */
+.content-preview {
+    display: none;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: var(--color-bg);
+    border: 1px solid rgba(var(--color-text), 0.1);
+    margin-top: 1rem;
 }

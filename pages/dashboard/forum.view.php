@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
 <body class="dashboard">
-    <!-- Simplified Header -->
+  <!-- Simplified Header -->
     <header id="dashboard-header">
         <div class="container">
             <nav>
@@ -54,14 +54,22 @@
     <main class="forum-content">
         <div class="container">
             <!-- Forum Header -->
-            <section class="forum-header">
-                <div class="header-content">
-                    <h1>Alumni Forum</h1>
-                    <p>Connect with fellow alumni, share experiences, and discuss topics of interest</p>
-                </div>
-                <a href="/forum/new-topic" class="btn btn-primary" id="newTopicBtn">
-                    <i class="fas fa-plus"></i> New Topic
-                </a>
+            <section class="forum-categories">
+                <?php foreach ($categories as $category): ?>
+                    <a href="/forum/category/<?= $category['id'] ?>" class="category-card" data-category="<?= strtolower($category['name']) ?>">
+                        <div class="category-icon">
+                            <i class="fas fa-<?= htmlspecialchars($category['icon']) ?>"></i>
+                        </div>
+                        <div class="category-info">
+                            <h3><?= htmlspecialchars($category['name']) ?></h3>
+                            <p><?= htmlspecialchars($category['description']) ?></p>
+                            <div class="stats">
+                                <span><?= $category['topic_count'] ?> Topics</span>
+                                <span><?= $category['post_count'] ?> Posts</span>
+                            </div>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
             </section>
 
             <?php if (isset($error)): ?>
@@ -91,6 +99,9 @@
             <section class="recent-discussions">
                 <div class="section-header">
                     <h2 class="section-title">Recent Discussions</h2>
+                    <a href="/forum/new-topic" class="btn btn-primary" style="margin-left: auto;">
+                        <i class="fas fa-plus"></i> Create Topic
+                    </a>
                     <div class="view-options">
                         <button class="btn btn-text active">Newest</button>
                         <button class="btn btn-text">Popular</button>

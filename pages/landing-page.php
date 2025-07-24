@@ -22,7 +22,7 @@
               </a>
               
               <div class="nav-links">
-                  <a href="./pages/dashboard/dashboard.view.php">Home</a>
+                  <a href="/dashboard">Home</a>
                   <a href="#features">Features</a>
                   <a href="#about">About</a>
                   <a href="#team">Team</a>

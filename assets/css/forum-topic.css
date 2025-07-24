@@ -470,3 +470,83 @@
         margin-top: 0.5rem;
     }
 }
+
+/* Accepted Answer Styling */
+.accepted-answer {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+}
+
+/* Vote button active states */
+.vote-btn.active {
+    color: var(--color-primary);
+    opacity: 1;
+}
+
+.vote-btn.upvote.active {
+    color: #4CAF50;
+}
+
+.vote-btn.downvote.active {
+    color: #e74c3c;
+}
+
+/* Reply form styling */
+.reply-form-section {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.reply-form-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+#reply-content {
+    width: 100%;
+    min-height: 150px;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--color-text), 0.1);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .discussion-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .discussion-actions {
+        justify-content: flex-start;
+        width: 100%;
+    }
+    
+    .reply-card {
+        flex-direction: column;
+    }
+    
+    .reply-votes {
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-bottom: 1rem;
+    }
+}

@@ -232,6 +232,46 @@
                     <?php endforeach; ?>
                 <?php endif; ?>
             </section>
+
+            <!-- Recent Forum Posts -->
+            <section class="recent-forum-posts">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Forum Discussions</h2>
+                    <a href="/forum" class="view-all">View All</a>
+                </div>
+                
+                <?php if (empty($latestForumPosts)): ?>
+                    <div class="alert alert-info">No recent forum discussions found.</div>
+                <?php else: ?>
+                    <?php foreach ($latestForumPosts as $post): ?>
+                        <div class="forum-post-card">
+                            <div class="post-header">
+                                <span class="category-badge <?= strtolower(str_replace(' ', '-', $post['category_name'])) ?>">
+                                    <?= htmlspecialchars($post['category_name']) ?>
+                                </span>
+                                <h3><a href="/forum/topic/<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h3>
+                            </div>
+                            <div class="post-meta">
+                                <div class="author-info">
+                                    <?php if (!empty($post['profile_picture'])): ?>
+                                        <img src="<?= htmlspecialchars($post['profile_picture']) ?>" alt="User avatar">
+                                    <?php else: ?>
+                                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Default avatar">
+                                    <?php endif; ?>
+                                    <span><?= htmlspecialchars($post['first_name'] . ' ' . $post['last_name']) ?></span>
+                                </div>
+                                <div class="post-info">
+                                    <span><i class="far fa-comment"></i> <?= $post['reply_count'] ?> replies</span>
+                                    <span class="post-time"><?= time_elapsed_string($post['created_at']) ?></span>
+                                </div>
+                            </div>
+                            <div class="post-excerpt">
+                                <?= htmlspecialchars(substr($post['content'], 0, 150)) ?><?= strlen($post['content']) > 150 ? '...' : '' ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </section>
         </div>
     </main>
 

@@ -11,26 +11,31 @@ class ForumController extends Controller {
 
         try {
             $categories = $this->getCategoriesWithStats();
+            error_log("Categories: " . print_r($categories, true)); // Debug
+            
             $discussions = $this->getRecentDiscussions();
+            error_log("Discussions: " . print_r($discussions, true)); // Debug
+            
             $popularAlumni = $this->getPopularAlumni();
-            $current_user_id = $_SESSION['user_id'];
+            error_log("Popular Alumni: " . print_r($popularAlumni, true)); // Debug
 
             $this->renderView('pages/dashboard/forum.view.php', [
                 'categories' => $categories,
                 'discussions' => $discussions,
                 'popularAlumni' => $popularAlumni,
-                'current_user_id' => $current_user_id
+                'current_user_id' => $_SESSION['user_id']
             ]);
 
         } catch (Exception $e) {
-            error_log("ForumController error: " . $e->getMessage());
-
+            error_log("ForumController ERROR: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            
             $this->renderView('pages/dashboard/forum.view.php', [
                 'categories' => [],
                 'discussions' => [],
                 'popularAlumni' => [],
                 'current_user_id' => $_SESSION['user_id'],
-                'error' => "Unable to load forum at this time"
+                'error' => "Unable to load forum at this time. Error: " . $e->getMessage()
             ]);
         }
     }
@@ -337,32 +342,62 @@ class ForumController extends Controller {
     }
     
     private function getRecentDiscussions($limit = 5) {
-        $stmt = $this->pdo->prepare("
-            SELECT t.*, u.first_name, u.last_name, u.profile_picture, c.name as category_name,
-            (SELECT COUNT(*) FROM forum_posts WHERE topic_id = t.id) as reply_count
-            FROM forum_topics t
-            JOIN users u ON t.user_id = u.id
-            JOIN forum_categories c ON t.category_id = c.id
-            ORDER BY t.created_at DESC
-            LIMIT ?
-        ");
-        $stmt->execute([$limit]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = "
+                SELECT 
+                    t.id, 
+                    t.title, 
+                    t.content, 
+                    t.created_at, 
+                    t.views,
+                    u.id as user_id, 
+                    u.first_name, 
+                    u.last_name, 
+                    u.profile_picture,
+                    u.graduation_year,
+                    u.degree_program,
+                    c.name as category_name,
+                    (SELECT COUNT(*) FROM forum_posts WHERE topic_id = t.id) as reply_count
+                FROM forum_topics t
+                JOIN users u ON t.user_id = u.id
+                JOIN forum_categories c ON t.category_id = c.id
+                ORDER BY t.created_at DESC
+                LIMIT ?
+            ";
+            
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(1, (int)$limit, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            error_log("PDO Error in getRecentDiscussions(): " . $e->getMessage());
+            throw new Exception("Database error: " . $e->getMessage());
+        }
     }
     
     private function getPopularAlumni($limit = 3) {
-        $stmt = $this->pdo->prepare("
-            SELECT u.id, u.first_name, u.last_name, u.profile_picture, 
-            u.graduation_year, u.degree_program,
-            (SELECT COUNT(*) FROM forum_topics WHERE user_id = u.id) as topic_count,
-            (SELECT COUNT(*) FROM forum_posts WHERE user_id = u.id) as post_count
-            FROM users u
-            WHERE (SELECT COUNT(*) FROM forum_topics WHERE user_id = u.id) > 0
-            OR (SELECT COUNT(*) FROM forum_posts WHERE user_id = u.id) > 0
-            ORDER BY (topic_count + post_count) DESC
-            LIMIT ?
-        ");
-        $stmt->execute([$limit]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT u.id, u.first_name, u.last_name, u.profile_picture, 
+                u.graduation_year, u.degree_program,
+                (SELECT COUNT(*) FROM forum_topics WHERE user_id = u.id) as topic_count,
+                (SELECT COUNT(*) FROM forum_posts WHERE user_id = u.id) as post_count
+                FROM users u
+                WHERE (SELECT COUNT(*) FROM forum_topics WHERE user_id = u.id) > 0
+                OR (SELECT COUNT(*) FROM forum_posts WHERE user_id = u.id) > 0
+                ORDER BY (topic_count + post_count) DESC
+                LIMIT ?
+            ");
+            $stmt->bindValue(1, (int)$limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("PDO Error in getPopularAlumni(): " . $e->getMessage());
+            throw new Exception("Database error: " . $e->getMessage());
+        }
     }
+
+    
 }

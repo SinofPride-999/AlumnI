@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discussion Topic - Alumni Connect</title>
+    <title><?= htmlspecialchars($topic['title']) ?> - Alumni Connect</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -19,7 +19,7 @@
         <div class="container">
             <nav>
                 <div class="nav-brand">
-                    <a href="home.html" class="logo">
+                    <a href="/dashboard" class="logo">
                         <i class="fas fa-graduation-cap"></i>
                         <span>AlumnI</span>
                     </a>
@@ -30,10 +30,21 @@
                         <i class="fas fa-moon"></i>
                     </button>
                     <div class="user-menu">
+                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
                         <button class="user-avatar" id="userMenuBtn">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="User avatar">
+                            <?php else: ?>
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
+                            <?php endif; ?>
                         </button>
                     </div>
+                    <!-- Logout Button -->
+                    <form action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </div>
             </nav>
         </div>
@@ -44,29 +55,35 @@
         <div class="container">
             <!-- Breadcrumb Navigation -->
             <nav class="breadcrumb">
-                <a href="forum.html">Forum</a>
+                <a href="/forum">Forum</a>
                 <i class="fas fa-chevron-right"></i>
-                <a href="forum.html">Career Discussions</a>
+                <a href="/forum/category/<?= $topic['category_id'] ?>"><?= htmlspecialchars($topic['category_name']) ?></a>
                 <i class="fas fa-chevron-right"></i>
-                <span>Looking for software engineers at our startup</span>
+                <span><?= htmlspecialchars($topic['title']) ?></span>
             </nav>
 
             <!-- Discussion Header -->
             <section class="discussion-header">
                 <div class="header-content">
-                    <div class="category-badge career">Career</div>
-                    <h1>Looking for software engineers at our startup</h1>
+                    <div class="category-badge <?= strtolower(str_replace(' ', '-', $topic['category_name'])) ?>">
+                        <?= htmlspecialchars($topic['category_name']) ?>
+                    </div>
+                    <h1><?= htmlspecialchars($topic['title']) ?></h1>
                     <div class="discussion-meta">
                         <div class="author-info">
-                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Author avatar">
+                            <?php if (!empty($topic['profile_picture'])): ?>
+                                <img src="<?= htmlspecialchars($topic['profile_picture']) ?>" alt="Author avatar">
+                            <?php else: ?>
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Author avatar">
+                            <?php endif; ?>
                             <div>
-                                <span class="author-name">David Kim</span>
-                                <span class="author-title">Class of 2015 · Founder at TechStart</span>
+                                <span class="author-name"><?= htmlspecialchars($topic['first_name'] . ' ' . $topic['last_name']) ?></span>
+                                <span class="author-title">Class of <?= htmlspecialchars($topic['graduation_year'] ?? 'N/A') ?></span>
                             </div>
                         </div>
                         <div class="post-info">
-                            <span class="post-time">Posted 2 days ago</span>
-                            <span class="post-views"><i class="far fa-eye"></i> 128 views</span>
+                            <span class="post-time"><?= time_elapsed_string($topic['created_at']) ?></span>
+                            <span class="post-views"><i class="far fa-eye"></i> <?= $topic['views'] ?> views</span>
                         </div>
                     </div>
                 </div>
@@ -83,37 +100,7 @@
             <!-- Discussion Content -->
             <section class="discussion-content">
                 <div class="post-content">
-                    <p>Hello fellow alumni! I'm excited to announce that our startup, TechStart, is looking to hire 2-3 software engineers to join our growing team. We're an alumni-founded company building innovative SaaS solutions for the education sector.</p>
-                    
-                    <h3>About the Position</h3>
-                    <p>We're looking for engineers with 3+ years of professional experience in JavaScript and React. You'll be working on our core product, helping to architect new features and improve system performance.</p>
-                    
-                    <h3>Requirements</h3>
-                    <ul>
-                        <li>Strong proficiency in JavaScript (ES6+)</li>
-                        <li>3+ years experience with React and Redux</li>
-                        <li>Experience with Node.js and RESTful APIs</li>
-                        <li>Familiarity with modern frontend build pipelines</li>
-                        <li>Bachelor's degree in Computer Science or related field</li>
-                    </ul>
-                    
-                    <h3>What We Offer</h3>
-                    <ul>
-                        <li>Competitive salary ($120K-$150K based on experience)</li>
-                        <li>Equity stake in the company</li>
-                        <li>Flexible work arrangements (remote or hybrid)</li>
-                        <li>Health, dental, and vision insurance</li>
-                        <li>401(k) matching</li>
-                    </ul>
-                    
-                    <p>If you're interested or know someone who might be, please reach out! Alumni candidates will receive priority consideration.</p>
-                    
-                    <div class="post-tags">
-                        <span class="tag">#hiring</span>
-                        <span class="tag">#software-engineer</span>
-                        <span class="tag">#javascript</span>
-                        <span class="tag">#react</span>
-                    </div>
+                    <?= nl2br(htmlspecialchars($topic['content'])) ?>
                 </div>
                 
                 <div class="post-actions">
@@ -121,7 +108,7 @@
                         <button class="vote-btn upvote">
                             <i class="fas fa-chevron-up"></i>
                         </button>
-                        <span class="vote-count">24</span>
+                        <span class="vote-count">0</span>
                         <button class="vote-btn downvote">
                             <i class="fas fa-chevron-down"></i>
                         </button>
@@ -135,7 +122,7 @@
             <!-- Replies Section -->
             <section class="replies-section">
                 <div class="section-header">
-                    <h2>14 Replies</h2>
+                    <h2><?= count($posts) - 1 ?> Replies</h2>
                     <div class="sort-options">
                         <label for="sort-replies">Sort by:</label>
                         <select id="sort-replies">
@@ -146,159 +133,56 @@
                     </div>
                 </div>
                 
-                <!-- Reply 1 -->
-                <div class="reply-card">
-                    <div class="reply-votes">
-                        <button class="vote-btn upvote">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <span class="vote-count">8</span>
-                        <button class="vote-btn downvote">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="reply-content">
-                        <div class="reply-header">
-                            <div class="author-info">
-                                <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="User avatar">
-                                <div>
-                                    <span class="author-name">Maria Gonzalez</span>
-                                    <span class="author-title">Class of 2016 · Senior Engineer at Google</span>
+                <?php foreach ($posts as $post): ?>
+                    <?php if ($post['id'] != $topic['id']): // Skip the original post ?>
+                    <div class="reply-card" data-post-id="<?= $post['id'] ?>">
+                        <div class="reply-votes">
+                            <button class="vote-btn upvote" data-vote-type="up">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <span class="vote-count"><?= $post['upvotes'] - $post['downvotes'] ?></span>
+                            <button class="vote-btn downvote" data-vote-type="down">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="reply-content">
+                            <div class="reply-header">
+                                <div class="author-info">
+                                    <?php if (!empty($post['profile_picture'])): ?>
+                                        <img src="<?= htmlspecialchars($post['profile_picture']) ?>" alt="User avatar">
+                                    <?php else: ?>
+                                        <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="User avatar">
+                                    <?php endif; ?>
+                                    <div>
+                                        <span class="author-name"><?= htmlspecialchars($post['first_name'] . ' ' . $post['last_name']) ?></span>
+                                        <span class="author-title">Class of <?= htmlspecialchars($post['graduation_year'] ?? 'N/A') ?></span>
+                                        <?php if ($post['is_answer']): ?>
+                                            <span class="badge accepted-answer">Accepted Answer</span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
+                                <span class="reply-time"><?= time_elapsed_string($post['created_at']) ?></span>
                             </div>
-                            <span class="reply-time">1 day ago</span>
-                        </div>
-                        <div class="reply-text">
-                            <p>This sounds like a great opportunity! I worked with David during our time at university and can vouch for his technical skills and leadership. The tech stack looks solid too.</p>
-                            
-                            <p>For anyone considering applying, I'd recommend brushing up on your system design knowledge as that's often a focus in startup interviews.</p>
-                        </div>
-                        <div class="reply-actions">
-                            <button class="btn btn-text">
-                                <i class="far fa-comment"></i> Reply
-                            </button>
-                            <button class="btn btn-text">
-                                <i class="fas fa-flag"></i> Report
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Reply 2 -->
-                <div class="reply-card">
-                    <div class="reply-votes">
-                        <button class="vote-btn upvote">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <span class="vote-count">5</span>
-                        <button class="vote-btn downvote">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="reply-content">
-                        <div class="reply-header">
-                            <div class="author-info">
-                                <img src="https://randomuser.me/api/portraits/men/31.jpg" alt="User avatar">
-                                <div>
-                                    <span class="author-name">Robert Chen</span>
-                                    <span class="author-title">Class of 2019 · Software Engineer</span>
-                                </div>
+                            <div class="reply-text">
+                                <?= nl2br(htmlspecialchars($post['content'])) ?>
                             </div>
-                            <span class="reply-time">1 day ago</span>
-                        </div>
-                        <div class="reply-text">
-                            <p>I'm interested in applying! I have 4 years of experience with React and Node.js, currently working at a mid-sized tech company. Would you consider candidates who are strong in TypeScript but have less experience with Redux?</p>
-                            
-                            <p>Also, is there a specific application process or should we just DM you our resumes?</p>
-                        </div>
-                        <div class="reply-actions">
-                            <button class="btn btn-text">
-                                <i class="far fa-comment"></i> Reply
-                            </button>
-                            <button class="btn btn-text">
-                                <i class="fas fa-flag"></i> Report
-                            </button>
-                        </div>
-                        
-                        <!-- Nested Reply -->
-                        <div class="nested-replies">
-                            <div class="reply-card">
-                                <div class="reply-votes">
-                                    <button class="vote-btn upvote">
-                                        <i class="fas fa-chevron-up"></i>
+                            <div class="reply-actions">
+                                <button class="btn btn-text reply-to-post">
+                                    <i class="far fa-comment"></i> Reply
+                                </button>
+                                <?php if ($topic['user_id'] == $_SESSION['user_id'] && !$post['is_answer'] && !$topic['is_closed']): ?>
+                                    <button class="btn btn-text mark-answer" data-post-id="<?= $post['id'] ?>">
+                                        <i class="fas fa-check"></i> Mark as Answer
                                     </button>
-                                    <span class="vote-count">3</span>
-                                    <button class="vote-btn downvote">
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                </div>
-                                <div class="reply-content">
-                                    <div class="reply-header">
-                                        <div class="author-info">
-                                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User avatar">
-                                            <div>
-                                                <span class="author-name">David Kim</span>
-                                                <span class="author-title">Original Poster · Class of 2015</span>
-                                            </div>
-                                        </div>
-                                        <span class="reply-time">20 hours ago</span>
-                                    </div>
-                                    <div class="reply-text">
-                                        <p>@Robert Chen TypeScript is definitely a plus! We're actually migrating some of our codebase to TypeScript, so that experience would be valuable. Regarding Redux, we're open to candidates with experience in similar state management solutions.</p>
-                                        
-                                        <p>Please email your resume to careers@techstart.com with "Alumni Applicant" in the subject line. I'll make sure it gets reviewed promptly.</p>
-                                    </div>
-                                    <div class="reply-actions">
-                                        <button class="btn btn-text">
-                                            <i class="far fa-comment"></i> Reply
-                                        </button>
-                                        <button class="btn btn-text">
-                                            <i class="fas fa-flag"></i> Report
-                                        </button>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
+                                <button class="btn btn-text">
+                                    <i class="fas fa-flag"></i> Report
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Reply 3 -->
-                <div class="reply-card">
-                    <div class="reply-votes">
-                        <button class="vote-btn upvote">
-                            <i class="fas fa-chevron-up"></i>
-                        </button>
-                        <span class="vote-count">2</span>
-                        <button class="vote-btn downvote">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="reply-content">
-                        <div class="reply-header">
-                            <div class="author-info">
-                                <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="User avatar">
-                                <div>
-                                    <span class="author-name">Jessica Wong</span>
-                                    <span class="author-title">Class of 2017 · Engineering Manager</span>
-                                </div>
-                            </div>
-                            <span class="reply-time">18 hours ago</span>
-                        </div>
-                        <div class="reply-text">
-                            <p>Great to see alumni supporting each other in their careers! I'll share this with my network - we have some talented engineers who might be looking for new opportunities.</p>
-                            
-                            <p>David, does your company offer any internship opportunities for current students? We have some strong candidates in our CS program who could benefit from startup experience.</p>
-                        </div>
-                        <div class="reply-actions">
-                            <button class="btn btn-text">
-                                <i class="far fa-comment"></i> Reply
-                            </button>
-                            <button class="btn btn-text">
-                                <i class="fas fa-flag"></i> Report
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
                 
                 <!-- Load More Replies -->
                 <div class="load-more">
@@ -311,9 +195,9 @@
             <!-- Reply Form -->
             <section class="reply-form-section">
                 <h2>Post Your Reply</h2>
-                <form id="replyForm">
+                <form id="replyForm" action="/forum/topic/<?= $topic['id'] ?>/reply" method="POST">
                     <div class="form-group">
-                        <textarea id="reply-content" placeholder="Write your reply here..." required></textarea>
+                        <textarea id="reply-content" name="content" placeholder="Write your reply here..." required></textarea>
                     </div>
                     <div class="form-actions">
                         <button type="button" class="btn btn-text" id="cancelReplyBtn">Cancel</button>
@@ -326,6 +210,7 @@
             <section class="similar-discussions">
                 <h2 class="section-title">Similar Discussions</h2>
                 <div class="discussion-list">
+                    <!-- You would typically fetch these from your database -->
                     <div class="discussion-card">
                         <div class="discussion-content">
                             <div class="discussion-header">
@@ -374,16 +259,15 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/forum">Forum</a></li>
+                        <li><a href="/profile">Profile</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 AlumnI. All rights reserved. Developed by Group 12.</p>
+                <p>&copy; <?= date('Y') ?> AlumnI. All rights reserved. Developed by Group 12.</p>
             </div>
         </div>
     </footer>
@@ -391,5 +275,125 @@
     <!-- JavaScript -->
     <script src="../../assets/js/index.js"></script>
     <script src="../../assets/js/forum-topic.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Voting functionality
+            document.querySelectorAll('.vote-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const postId = this.closest('[data-post-id]').dataset.postId;
+                    const voteType = this.dataset.voteType;
+                    
+                    try {
+                        const response = await fetch(`/forum/post/${postId}/vote/${voteType}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) throw new Error('Vote failed');
+                        
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        
+                        // Update UI
+                        const voteContainer = this.closest('.reply-votes');
+                        const voteCount = voteContainer.querySelector('.vote-count');
+                        voteCount.textContent = data.upvotes - data.downvotes;
+                        
+                        // Update active states
+                        voteContainer.querySelectorAll('.vote-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        
+                        if (data.user_vote === 'up') {
+                            voteContainer.querySelector('.upvote').classList.add('active');
+                        } else if (data.user_vote === 'down') {
+                            voteContainer.querySelector('.downvote').classList.add('active');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Vote error:', error);
+                        alert('Failed to process your vote');
+                    }
+                });
+            });
+            
+            // Mark as answer
+            document.querySelectorAll('.mark-answer').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const postId = this.dataset.postId;
+                    
+                    if (!confirm('Mark this post as the accepted answer?')) return;
+                    
+                    try {
+                        const response = await fetch(`/forum/post/${postId}/answer`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) throw new Error('Action failed');
+                        
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+                        
+                        alert('Post marked as answer');
+                        // Refresh or update UI
+                        window.location.reload();
+                        
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to mark as answer');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
+<?php
+function time_elapsed_string($datetime, $full = false) {
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
+
+    $weeks = floor($diff->d / 7);  // Calculate weeks separately
+    $diff->d -= $weeks * 7;
+
+    $string = array(
+        'y' => 'year',
+        'm' => 'month',
+        'w' => 'week',
+        'd' => 'day',
+        'h' => 'hour',
+        'i' => 'minute',
+        's' => 'second',
+    );
+
+    // Inject 'w' into the diff manually
+    $diff_array = (array) $diff;
+    $diff_array['w'] = $weeks;
+
+    foreach ($string as $k => &$v) {
+        if (!empty($diff_array[$k])) {
+            $v = $diff_array[$k] . ' ' . $v . ($diff_array[$k] > 1 ? 's' : '');
+        } else {
+            unset($string[$k]);
+        }
+    }
+
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . ' ago' : 'just now';
+}
+?>

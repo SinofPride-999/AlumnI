@@ -29,7 +29,6 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 3rem;
-    width: 100%; /* Ensure full width */
 }
 
 .category-card {
@@ -39,31 +38,49 @@
     display: flex;
     gap: 1.5rem;
     box-shadow: var(--shadow);
-    transition: transform 0.2s ease;
-    min-height: 150px; /* Minimum height */
-    overflow: hidden; /* Prevent content overflow */
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--color-primary);
     position: relative;
-    z-index: 1;
+    overflow: hidden; /* Prevent content overflow */
 }
 
 .category-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(var(--color-primary), 0.03) 0%, transparent 100%);
+    z-index: 0;
 }
 
 .category-icon {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    border-radius: 12px;
     background-color: rgba(var(--color-primary), 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .category-icon i {
+    color: white;
 }
 
 .category-icon i {
     font-size: 1.5rem;
     color: var(--color-primary);
+    transition: all 0.3s ease;
 }
 
 .category-info {
@@ -74,27 +91,38 @@
 .category-info h3 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
 .category-info p {
     font-size: 0.9rem;
-    opacity: 0.8;
+    opacity: 0.9;
     margin-bottom: 1rem;
     line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limit to 2 lines */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .stats {
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
+    color: var(--color-text);
     opacity: 0.8;
+}
+
+.stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.stats span::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    display: inline-block;
 }
 
 /* Recent Discussions */
@@ -231,6 +259,33 @@
 .category-badge.industry {
     background-color: rgba(255, 152, 0, 0.1);
     color: #FF9800;
+}
+
+/* Category Badge Colors */
+.category-card[data-category="career"] {
+    border-left-color: #4CAF50;
+}
+.category-card[data-category="campus"] {
+    border-left-color: #2196F3;
+}
+.category-card[data-category="reunion"] {
+    border-left-color: #9C27B0;
+}
+.category-card[data-category="industry"] {
+    border-left-color: #FF9800;
+}
+.category-card[data-category="general"] {
+    border-left-color: #607D8B;
+}
+
+.category-card[data-category="career"] .category-icon {
+    background-color: rgba(76, 175, 80, 0.1);
+}
+.category-card[data-category="career"] .category-icon i {
+    color: #4CAF50;
+}
+.category-card[data-category="career"]:hover .category-icon {
+    background-color: #4CAF50;
 }
 
 .discussion-header h3 {
@@ -441,6 +496,50 @@
     padding: 1.5rem;
 }
 
+.form-control {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(var(--color-text), 0.2);
+    border-radius: 8px;
+    background-color: var(--color-card-bg);
+    color: var(--color-text);
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    outline: none; /* Remove default browser outline */
+    box-shadow: none; /* Remove any default shadows */
+}
+
+.form-control:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.2);
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2308A4BD' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+}
+
+/* For textareas */
+textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+/* Error states */
+.form-group.has-error .form-control {
+    border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.03);
+}
+
+.form-group.has-error .form-control:focus {
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -508,6 +607,19 @@
     
     .modal-content {
         width: 95%;
+    }
+    .forum-categories {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
     }
 }
 

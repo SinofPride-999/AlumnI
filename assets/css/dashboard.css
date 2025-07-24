@@ -420,6 +420,113 @@
     font-size: 1.2rem;
 }
 
+/* Recent Forum Posts */
+.recent-forum-posts {
+    margin-top: 3rem;
+}
+
+.forum-post-card {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.post-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.post-header h3 a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.post-header h3 a:hover {
+    color: var(--color-primary);
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.author-info img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.8;
+}
+
+.post-info i {
+    margin-right: 0.3rem;
+}
+
+.post-time {
+    font-weight: 500;
+}
+
+.post-excerpt {
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Category badges */
+.category-badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.category-badge.general-discussion {
+    background-color: rgba(96, 125, 139, 0.1);
+    color: #607D8B;
+}
+
+.category-badge.career-advice {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.category-badge.campus-memories {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: #2196F3;
+}
+
+.category-badge.alumni-events {
+    background-color: rgba(156, 39, 176, 0.1);
+    color: #9C27B0;
+}
+
 /* Responsive Styles */
 @media (max-width: 992px) {
     .mobile-menu-btn {
@@ -471,6 +578,17 @@
     .btn {
         width: 100%;
         text-align: center;
+    }
+    .post-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .post-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
 
