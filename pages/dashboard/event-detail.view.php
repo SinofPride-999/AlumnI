@@ -12,7 +12,7 @@
 <body class="dashboard">
     <!-- Simplified Header -->
     <?php
-    define('BASE_PATH', dirname(__DIR__, 2));
+    require_once dirname(__DIR__, 2) . '/app/config.php';
     include BASE_PATH . '/partials/nav.php'; 
     ?>
 

@@ -20,6 +20,11 @@ session_start();
 
 define('DEBUG_MODE', true); // Set to false in production
 
+// Base path for includes
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__));
+}
+
 // Database connection
 try {
     $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USERNAME, DB_PASSWORD);
@@ -29,26 +34,5 @@ try {
 }
 
 // Helper functions
-function redirect($path) {
-    header("Location: $path");
-    exit();
-}
+include BASE_PATH . '/utils/helper.php'; 
 
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
-}
-
-function requireAuth() {
-    if (!isLoggedIn()) {
-        redirect('/login');
-    }
-}
-
-function sanitizeInput($data) {
-    return htmlspecialchars(strip_tags(trim($data)));
-}
-
-function getBaseUrl() {
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
-    return $protocol . $_SERVER['HTTP_HOST'];
-}
