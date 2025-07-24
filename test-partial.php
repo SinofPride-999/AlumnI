@@ -11,10 +11,6 @@ $scripts = [
   '',
 ];
 
-include __DIR__ . '/../partials/head.php'; 
-include __DIR__ . '/../partials/nav.php'; 
-include __DIR__ . '/../partials/specific-js.php';
-
 ?>
 
 <body>

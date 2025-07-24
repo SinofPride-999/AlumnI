@@ -1,58 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Alumni Connect</title>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="../../assets/css/index.css">
-    <link rel="stylesheet" href="../../assets/css/dashboard.css">
-    <style>
-      /* Job cards in dashboard */
-      .job-card {
-          background-color: var(--color-card-bg);
-          border-radius: 12px;
-          padding: 1.5rem;
-          margin-bottom: 1rem;
-          box-shadow: var(--shadow);
-      }
+<?php
+require_once dirname(__DIR__, 2) . '/app/config.php';
 
-      .job-header {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin-bottom: 1rem;
-      }
+$title = "Dashboard - Alumni Connect";
 
-      .job-header img {
-          width: 50px;
-          height: 50px;
-          border-radius: 8px;
-          object-fit: cover;
-      }
+$styles = [
+    '/assets/css/dashboard.css',
+    '/assets/css/dashboard.css',
+];
 
-      .job-meta {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin-bottom: 1rem;
-      }
+$inlineStyle = <<<STYLE
+.job-card {
+    background-color: var(--color-card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+}
+.job-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.job-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.job-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.posted-date {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+.job-actions {
+    display: flex;
+    gap: 1rem;
+}
+STYLE;
 
-      .posted-date {
-          font-size: 0.9rem;
-          opacity: 0.7;
-      }
+include BASE_PATH . '/layouts/head.layout.php';
+?>
 
-      .job-actions {
-          display: flex;
-          gap: 1rem;
-      }
-    </style>
-</head>
 <body class="dashboard">
     <!-- Simplified Header -->
     <?php

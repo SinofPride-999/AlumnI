@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($topic['title']) ?> - Alumni Connect</title>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="../../assets/css/index.css">
-    <link rel="stylesheet" href="../../assets/css/forum-topic.css">
-    <link rel="stylesheet" href="../../assets/css/dashboard.css">
-</head>
+<?php
+require_once dirname(__DIR__, 2) . '/app/config.php';
+
+$title = htmlspecialchars($topic['title']) . ' - Alumni Connect';
+
+$styles = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+    '/assets/css/index.css',
+    '/assets/css/forum-topic.css',
+    '/assets/css/dashboard.css',
+];
+
+include BASE_PATH . '/layouts/head.layout.php';
+?>
+
 <body class="dashboard">
     <!-- Header -->
     <?php

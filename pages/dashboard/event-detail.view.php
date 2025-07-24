@@ -1,14 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($event['title']) ?> - Alumni Connect</title>
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
-    <link rel="stylesheet" href="/assets/css/index.css">
-    <link rel="stylesheet" href="/assets/css/events.css">
-    <link rel="stylesheet" href="/assets/css/event-detail.css">
-</head>
+<?php
+require_once dirname(__DIR__, 2) . '/app/config.php';
+
+$title = htmlspecialchars($event['title']) . ' - Alumni Connect';
+
+$styles = [
+    '/assets/css/index.css',
+    '/assets/css/dashboard.css',
+    '/assets/css/events.css',
+    '/assets/css/event-detail.css',
+];
+
+$inlineStyle = '';
+
+include BASE_PATH . '/layouts/head.layout.php';
+?>
+
 <body class="dashboard">
     <!-- Simplified Header -->
     <?php

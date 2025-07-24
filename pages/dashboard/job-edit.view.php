@@ -1,17 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Job - Alumni Connect</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css/index.css">
-    <link rel="stylesheet" href="../../assets/css/jobs.css">
-    <link rel="stylesheet" href="../../assets/css/dashboard.css">
-    <link rel="stylesheet" href="../../assets/css/job-create.css">
-    <link rel="stylesheet" href="../../assets/css/job-edit.css">
-</head>
+<?php
+require_once dirname(__DIR__, 2) . '/app/config.php';
+
+$title = 'Edit Job - Alumni Connect';
+
+$styles = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+    '/assets/css/index.css',
+    '/assets/css/jobs.css',
+    '/assets/css/dashboard.css',
+    '/assets/css/job-create.css',
+    '/assets/css/job-edit.css',
+];
+
+include BASE_PATH . '/layouts/head.layout.php';
+?>
+
 <body class="dashboard">
 
   <!-- Simplified Header  -->
