@@ -10,47 +10,10 @@
 </head>
 <body class="dashboard">
     <!-- Simplified Header -->
-    <header id="dashboard-header">
-        <div class="container">
-            <nav>
-                <div class="nav-brand">
-                    <a href="home.html" class="logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>AlumnI</span>
-                    </a>
-                </div>
-                
-                <div class="nav-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-
-                    <div class="user-menu">
-                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
-                        
-                        <button class="user-avatar" id="userMenuBtn">
-                            <?php if (!empty($user['profile_picture'])): ?>
-                                <a href="/profile">
-                                    <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="Profile picture">
-                                </a>
-                            <?php else: ?>
-                                <a href="/profile">
-                                    <img src="https://t3.ftcdn.net/jpg/06/31/16/54/360_F_631165406_6HfMsexCGHstso3udEHJmlFVzdSOevJ5.jpg" alt="Default avatar">
-                                </a>
-                            <?php endif; ?>
-                        </button>
-                    </div>
-
-                    <!-- Logout Button -->
-                    <form action="/logout" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php
+    define('BASE_PATH', dirname(__DIR__, 2));
+    include BASE_PATH . '/partials/nav.php'; 
+    ?>
 
     <main class="dashboard-content">
         <div class="container">
@@ -88,30 +51,9 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>AlumnI</h3>
-                    <p>Bridging the gap between alumni and their alma mater through technology and community.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 AlumnI. All rights reserved. Developed by Group 12.</p>
-            </div>
-        </div>
-    </footer>
+    <?php 
+    include BASE_PATH . '/partials/footer.php'; 
+    ?>
 
     <!-- JavaScript -->
     <script src="../../assets/js/index.js"></script>

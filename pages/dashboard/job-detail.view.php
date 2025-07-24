@@ -15,29 +15,10 @@
 </head>
 <body class="dashboard">
     <!-- Simplified Header -->
-    <header id="dashboard-header">
-        <div class="container">
-            <nav>
-                <div class="nav-brand">
-                    <a href="home.html" class="logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>AlumnI</span>
-                    </a>
-                </div>
-                
-                <div class="nav-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <div class="user-menu">
-                        <button class="user-avatar" id="userMenuBtn">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <?php
+    define('BASE_PATH', dirname(__DIR__, 2));
+    include BASE_PATH . '/partials/nav.php'; 
+    ?>
 
     <!-- Main Content -->
     <main class="job-detail-content">
@@ -237,30 +218,9 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>AlumnI</h3>
-                    <p>Bridging the gap between alumni and their alma mater through technology and community.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 AlumnI. All rights reserved. Developed by Group 12.</p>
-            </div>
-        </div>
-    </footer>
+    <?php 
+    include BASE_PATH . '/partials/footer.php'; 
+    ?>
 
     <!-- JavaScript -->
     <script src="../../assets/js/index.js"></script>

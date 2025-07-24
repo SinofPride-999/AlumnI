@@ -14,189 +14,150 @@
 </head>
 <body class="dashboard">
 
-<header id="dashboard-header">
-    <div class="container">
-        <nav>
-            <div class="nav-brand">
-                <a href="/dashboard" class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>AlumnI</span>
-                </a>
-            </div>
-            <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-                <div class="user-menu">
-                    <?php $user = $GLOBALS['auth_user'] ?? null; ?>
-                    <button class="user-avatar" id="userMenuBtn">
-                        <img src="<?= htmlspecialchars($user['profile_picture'] ?? 'https://randomuser.me/api/portraits/men/32.jpg') ?>" alt="User avatar">
-                    </button>
-                </div>
-                <form action="/logout" method="POST">
-                    <button type="submit" class="btn btn-secondary logout-btn">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </div>
-        </nav>
-    </div>
-</header>
+  <!-- Simplified Header  -->
+  <?php
+  define('BASE_PATH', dirname(__DIR__, 2));
+  include BASE_PATH . '/partials/nav.php'; 
+  ?>
 
-<main class="jobs-content">
-    <div class="container">
-        <section class="page-header">
-            <h1>Edit Job Posting</h1>
-            <p>Update your job listing details</p>
-        </section>
+  <main class="jobs-content">
+      <div class="container">
+          <section class="page-header">
+              <h1>Edit Job Posting</h1>
+              <p>Update your job listing details</p>
+          </section>
 
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']) ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
+          <?php if (isset($_SESSION['error'])): ?>
+              <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']) ?></div>
+              <?php unset($_SESSION['error']); ?>
+          <?php endif; ?>
 
-        <?php if (isset($_SESSION['job_errors'])): ?>
-            <div class="alert alert-danger">
-                <ul>
-                    <?php foreach ($_SESSION['job_errors'] as $error): ?>
-                        <li><?= htmlspecialchars($error) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-            <?php unset($_SESSION['job_errors']); ?>
-        <?php endif; ?>
+          <?php if (isset($_SESSION['job_errors'])): ?>
+              <div class="alert alert-danger">
+                  <ul>
+                      <?php foreach ($_SESSION['job_errors'] as $error): ?>
+                          <li><?= htmlspecialchars($error) ?></li>
+                      <?php endforeach; ?>
+                  </ul>
+              </div>
+              <?php unset($_SESSION['job_errors']); ?>
+          <?php endif; ?>
 
-        <form method="post" action="/jobs/update/<?= $job['id'] ?>" class="job-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="title">Job Title *</label>
-                    <input type="text" id="title" name="title" value="<?= htmlspecialchars($job['title']) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="company">Company *</label>
-                    <input type="text" id="company" name="company" value="<?= htmlspecialchars($job['company']) ?>" required>
-                </div>
-            </div>
+          <form method="post" action="/jobs/update/<?= $job['id'] ?>" class="job-form">
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="title">Job Title *</label>
+                      <input type="text" id="title" name="title" value="<?= htmlspecialchars($job['title']) ?>" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="company">Company *</label>
+                      <input type="text" id="company" name="company" value="<?= htmlspecialchars($job['company']) ?>" required>
+                  </div>
+              </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="location">Location *</label>
-                    <input type="text" id="location" name="location" value="<?= htmlspecialchars($job['location']) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="job_type">Job Type *</label>
-                    <select id="job_type" name="job_type" required>
-                        <?php foreach (['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'] as $type): ?>
-                            <option value="<?= $type ?>" <?= $job['job_type'] === $type ? 'selected' : '' ?>><?= $type ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="location">Location *</label>
+                      <input type="text" id="location" name="location" value="<?= htmlspecialchars($job['location']) ?>" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="job_type">Job Type *</label>
+                      <select id="job_type" name="job_type" required>
+                          <?php foreach (['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance'] as $type): ?>
+                              <option value="<?= $type ?>" <?= $job['job_type'] === $type ? 'selected' : '' ?>><?= $type ?></option>
+                          <?php endforeach; ?>
+                      </select>
+                  </div>
+              </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="category">Category *</label>
-                    <select id="category" name="category" required>
-                        <option value="">Select Category</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= htmlspecialchars($cat) ?>" <?= $job['category'] === $cat ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="salary_range">Salary Range</label>
-                    <input type="text" id="salary_range" name="salary_range" value="<?= htmlspecialchars($job['salary_range']) ?>" placeholder="e.g., $80,000 - $100,000">
-                </div>
-            </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="category">Category *</label>
+                      <select id="category" name="category" required>
+                          <option value="">Select Category</option>
+                          <?php foreach ($categories as $cat): ?>
+                              <option value="<?= htmlspecialchars($cat) ?>" <?= $job['category'] === $cat ? 'selected' : '' ?>>
+                                  <?= htmlspecialchars($cat) ?>
+                              </option>
+                          <?php endforeach; ?>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label for="salary_range">Salary Range</label>
+                      <input type="text" id="salary_range" name="salary_range" value="<?= htmlspecialchars($job['salary_range']) ?>" placeholder="e.g., $80,000 - $100,000">
+                  </div>
+              </div>
 
-            <div class="form-group">
-                <label for="technologies">Technologies</label>
-                <input type="text" id="technologies" name="technologies" value="<?= htmlspecialchars($job['technologies']) ?>" placeholder="e.g., PHP, JavaScript">
-            </div>
+              <div class="form-group">
+                  <label for="technologies">Technologies</label>
+                  <input type="text" id="technologies" name="technologies" value="<?= htmlspecialchars($job['technologies']) ?>" placeholder="e.g., PHP, JavaScript">
+              </div>
 
-            <div class="form-group">
-                <label for="description">Job Description *</label>
-                <textarea id="description" name="description" rows="6" required><?= htmlspecialchars($job['description']) ?></textarea>
-            </div>
+              <div class="form-group">
+                  <label for="description">Job Description *</label>
+                  <textarea id="description" name="description" rows="6" required><?= htmlspecialchars($job['description']) ?></textarea>
+              </div>
 
-            <div class="form-group">
-                <label for="requirements">Requirements *</label>
-                <textarea id="requirements" name="requirements" rows="6" required><?= htmlspecialchars($job['requirements']) ?></textarea>
-            </div>
+              <div class="form-group">
+                  <label for="requirements">Requirements *</label>
+                  <textarea id="requirements" name="requirements" rows="6" required><?= htmlspecialchars($job['requirements']) ?></textarea>
+              </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="application_email">Application Email</label>
-                    <input type="email" id="application_email" name="application_email" value="<?= htmlspecialchars($job['application_email']) ?>">
-                </div>
-                <div class="form-group">
-                    <label for="application_url">Application URL</label>
-                    <input type="url" id="application_url" name="application_url" value="<?= htmlspecialchars($job['application_url']) ?>" placeholder="https://">
-                </div>
-            </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="application_email">Application Email</label>
+                      <input type="email" id="application_email" name="application_email" value="<?= htmlspecialchars($job['application_email']) ?>">
+                  </div>
+                  <div class="form-group">
+                      <label for="application_url">Application URL</label>
+                      <input type="url" id="application_url" name="application_url" value="<?= htmlspecialchars($job['application_url']) ?>" placeholder="https://">
+                  </div>
+              </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Job
-                </button>
-                <a href="/jobs" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-</main>
+              <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-save"></i> Update Job
+                  </button>
+                  <a href="/jobs" class="btn btn-secondary">
+                      <i class="fas fa-times"></i> Cancel
+                  </a>
+              </div>
+          </form>
+      </div>
+  </main>
 
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>AlumnI</h3>
-                <p>Bridging the gap between alumni and their alma mater through technology and community.</p>
-            </div>
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/profile">Profile</a></li>
-                    <li><a href="/find-alumni">Find Alumni</a></li>
-                    <li><a href="/jobs">Job Board</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 AlumnI. All rights reserved. Developed by Group 12.</p>
-        </div>
-    </div>
-</footer>
+  <!-- Footer -->
+  <?php 
+  include BASE_PATH . '/partials/footer.php'; 
+  ?>
 
-<script src="../../assets/js/index.js"></script>
-<script>
-    document.querySelector('.job-form').addEventListener('submit', function(e) {
-        let valid = true;
-        const requiredFields = this.querySelectorAll('[required]');
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.style.borderColor = '#e74c3c';
-                valid = false;
-                if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
-                    const error = document.createElement('span');
-                    error.className = 'error-message';
-                    error.textContent = 'This field is required';
-                    field.parentNode.insertBefore(error, field.nextSibling);
-                }
-            } else {
-                field.style.borderColor = '';
-                if (field.nextElementSibling && field.nextElementSibling.classList.contains('error-message')) {
-                    field.nextElementSibling.remove();
-                }
-            }
-        });
-        if (!valid) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    });
-</script>
+  <script src="../../assets/js/index.js"></script>
+  <script>
+      document.querySelector('.job-form').addEventListener('submit', function(e) {
+          let valid = true;
+          const requiredFields = this.querySelectorAll('[required]');
+          requiredFields.forEach(field => {
+              if (!field.value.trim()) {
+                  field.style.borderColor = '#e74c3c';
+                  valid = false;
+                  if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
+                      const error = document.createElement('span');
+                      error.className = 'error-message';
+                      error.textContent = 'This field is required';
+                      field.parentNode.insertBefore(error, field.nextSibling);
+                  }
+              } else {
+                  field.style.borderColor = '';
+                  if (field.nextElementSibling && field.nextElementSibling.classList.contains('error-message')) {
+                      field.nextElementSibling.remove();
+                  }
+              }
+          });
+          if (!valid) {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+      });
+  </script>
 </body>
 </html>

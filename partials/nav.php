@@ -1,47 +1,41 @@
-<header id="header">
-  <div class="container">
-      <nav>
-          <a href="#" class="logo">
-              <i class="fas fa-graduation-cap"></i>
-              <span>AlumnI</span>
-          </a>
-          
-          <div class="nav-links">
-              <a href="./pages/dashboard/dashboard.view.php">Home</a>
-              <a href="#features">Features</a>
-              <a href="#about">About</a>
-              <a href="#team">Team</a>
-          </div>
-          
-          <div class="nav-actions">
-              <button class="theme-toggle" id="themeToggle">
-                  <i class="fas fa-moon"></i>
-              </button>
-              <a href="/login" class="btn btn-secondary">Login</a>
-              <a href="/register" class="btn btn-primary">Register</a>
+    <header id="dashboard-header">
+        <div class="container">
+            <nav>
+                <div class="nav-brand">
+                    <a href="/dashboard" class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>AlumnI</span>
+                    </a>
+                </div>
+                
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
 
-              <button class="mobile-menu-btn" id="mobileMenuBtn">
-                  <i class="fas fa-bars hamburger-icon"></i>
-                  <i class="fas fa-times close-icon"></i>
-              </button>
-          </div>
-      </nav>
-  </div>
+                    <div class="user-menu">
+                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
+                        
+                        <button class="user-avatar" id="userMenuBtn">
+                            <?php if (!empty($user['profile_picture'])): ?>
+                                <a href="/profile">
+                                    <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="Profile picture">
+                                </a>
+                            <?php else: ?>
+                                <a href="/profile">
+                                    <img src="https://t3.ftcdn.net/jpg/06/31/16/54/360_F_631165406_6HfMsexCGHstso3udEHJmlFVzdSOevJ5.jpg" alt="Default avatar">
+                                </a>
+                            <?php endif; ?>
+                        </button>
+                    </div>
 
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu" id="mobileMenu">
-      <div class="mobile-menu-content">
-          <div class="mobile-menu-actions">
-              <div class="mobile-nav-links">
-                <a href="#home">Home</a>
-                <a href="#features">Features</a>
-                <a href="#about">About</a>
-                <a href="#team">Team</a>
-              </div>    
-
-              <a href="#" class="btn btn-secondary">Login</a>
-              <a href="#" class="btn btn-primary">Register</a>
-          </div>
-      </div>
-  </div>
-</header>
+                    <!-- Logout Button -->
+                    <form action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>

@@ -14,41 +14,11 @@
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
 </head>
 <body class="dashboard">
-    <!-- Simplified Header -->
-    <header id="dashboard-header">
-        <div class="container">
-            <nav>
-                <div class="nav-brand">
-                    <a href="/dashboard" class="logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>AlumnI</span>
-                    </a>
-                </div>
-                
-                <div class="nav-actions">
-                    <button class="theme-toggle" id="themeToggle">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <div class="user-menu">
-                        <?php $user = $GLOBALS['auth_user'] ?? null; ?>
-                        <button class="user-avatar" id="userMenuBtn">
-                            <?php if (!empty($user['profile_picture'])): ?>
-                                <img src="<?= htmlspecialchars($user['profile_picture']) ?>" alt="User avatar">
-                            <?php else: ?>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar">
-                            <?php endif; ?>
-                        </button>
-                    </div>
-                    <!-- Logout Button -->
-                    <form action="/logout" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-secondary logout-btn" style="margin-left: 1rem;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <!-- Header -->
+    <?php
+    define('BASE_PATH', dirname(__DIR__, 2));
+    include BASE_PATH . '/partials/nav.php'; 
+    ?>
 
     <!-- Main Content -->
     <main class="forum-topic-content">
@@ -248,29 +218,9 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>AlumnI</h3>
-                    <p>Bridging the gap between alumni and their alma mater through technology and community.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="/dashboard">Dashboard</a></li>
-                        <li><a href="/forum">Forum</a></li>
-                        <li><a href="/profile">Profile</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; <?= date('Y') ?> AlumnI. All rights reserved. Developed by Group 12.</p>
-            </div>
-        </div>
-    </footer>
+    <?php 
+    include BASE_PATH . '/partials/footer.php'; 
+    ?>
 
     <!-- JavaScript -->
     <script src="../../assets/js/index.js"></script>
