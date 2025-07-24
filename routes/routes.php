@@ -13,7 +13,8 @@ $controllers = [
     'ProfileController',
     'FindAlumniController',
     'JobsController',
-    'ForumController'
+    'ForumController',
+    'EventController'
 ];
 
 foreach ($controllers as $controller) {
@@ -31,7 +32,8 @@ $controllers = [
     'profile' => new ProfileController($pdo),
     'findAlumni' => new FindAlumniController($pdo),
     'jobs' => new JobsController($pdo),
-    'forum' => new ForumController($pdo)
+    'forum' => new ForumController($pdo),
+    'events' => new EventController($pdo)
 ];
 
 # Error handlers - CHANGED FROM error() TO setErrorHandler()
@@ -97,6 +99,15 @@ Router::post('/forum/new-topic', [$controllers['forum'], 'createTopic']);
 Router::post('/forum/topic/{id}/reply', [$controllers['forum'], 'createPost']);
 Router::post('/forum/post/{id}/vote/{type}', [$controllers['forum'], 'votePost']);
 Router::post('/forum/post/{id}/answer', [$controllers['forum'], 'markAsAnswer']);
+
+// Event Routes
+Router::get('/events', [$controllers['events'], 'show']);
+Router::get('/events/create', [$controllers['events'], 'create']);
+Router::post('/events/create', [$controllers['events'], 'create']);
+Router::get('/events/{id}', [$controllers['events'], 'showDetail']);
+Router::get('/events/{id}/edit', [$controllers['events'], 'edit']);
+Router::post('/events/{id}/edit', [$controllers['events'], 'edit']);
+Router::post('/events/{id}/delete', [$controllers['events'], 'delete']);
 
 Router::run();
 

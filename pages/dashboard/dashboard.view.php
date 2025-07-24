@@ -118,7 +118,7 @@
             <section class="quick-actions">
                 <h2 class="section-title">Quick Actions</h2>
                 <div class="action-grid">
-                    <a href="/dashboard" class="action-card">
+                    <a href="/events" class="action-card">
                         <i class="fas fa-calendar-alt"></i>
                         <span>View Events</span>
                     </a>
@@ -141,44 +141,36 @@
             <section class="upcoming-events">
                 <div class="section-header">
                     <h2 class="section-title">Upcoming Events</h2>
-                    <a href="events.html" class="view-all">View All</a>
+                    <a href="/events" class="view-all">View All</a>
                 </div>
                 
-                <div class="event-card">
-                    <div class="event-date">
-                        <span class="day">15</span>
-                        <span class="month">Jun</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Annual Alumni Reunion</h3>
-                        <p class="event-meta">
-                            <i class="fas fa-map-marker-alt"></i> Campus Auditorium
-                            <i class="fas fa-clock"></i> 5:00 PM
-                        </p>
-                        <div class="event-actions">
-                            <a href="#" class="btn btn-primary">RSVP</a>
-                            <a href="#" class="btn btn-text">Details</a>
+                <?php if (!empty($upcomingEvents)): ?>
+                    <?php foreach ($upcomingEvents as $event): ?>
+                        <div class="event-card">
+                            <div class="event-date">
+                                <span class="day"><?= date('d', strtotime($event['event_date'])) ?></span>
+                                <span class="month"><?= date('M', strtotime($event['event_date'])) ?></span>
+                            </div>
+                            <div class="event-details">
+                                <h3><?= htmlspecialchars($event['title']) ?></h3>
+                                <p class="event-meta">
+                                    <?php if ($event['is_online']): ?>
+                                        <i class="fas fa-video"></i> Online
+                                    <?php else: ?>
+                                        <i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($event['location']) ?>
+                                    <?php endif; ?>
+                                    <i class="fas fa-clock"></i> <?= date('g:i A', strtotime($event['event_date'])) ?>
+                                </p>
+                                <div class="event-actions">
+                                    <a href="/events/<?= $event['id'] ?>" class="btn btn-primary">Apply</a>
+                                    <a href="/events/<?= $event['id'] ?>" class="btn btn-text">Details</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-date">
-                        <span class="day">22</span>
-                        <span class="month">Jun</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Career Networking Workshop</h3>
-                        <p class="event-meta">
-                            <i class="fas fa-video"></i> Online
-                            <i class="fas fa-clock"></i> 6:00 PM
-                        </p>
-                        <div class="event-actions">
-                            <a href="#" class="btn btn-primary">Register</a>
-                            <a href="#" class="btn btn-text">Details</a>
-                        </div>
-                    </div>
-                </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="alert alert-info">No upcoming events scheduled.</div>
+                <?php endif; ?>
             </section>
 
             <!-- Recent Job Postings -->

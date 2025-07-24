@@ -367,3 +367,55 @@
         text-align: center;
     }
 }
+
+/* Events Styles */
+.events-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.event-card {
+    background: var(--color-card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.event-meta {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.event-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.event-form {
+    max-width: 600px;
+    margin-top: 2rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
