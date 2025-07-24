@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../utils/time.php';
 require_once dirname(__DIR__, 2) . '/app/config.php';
 
 $title = 'Post a Job - Alumni Connect';
@@ -229,11 +230,5 @@ include BASE_PATH . '/layouts/head.layout.php';
 </body>
 </html>
 
-<?php
-// Clear the session data after displaying it
-if (isset($_SESSION['job_data'])) {
-    unset($_SESSION['job_data']);
-}
-?>
 
 
