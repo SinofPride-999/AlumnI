@@ -48,8 +48,12 @@ include BASE_PATH . '/layouts/head.layout.php';
               <div class="results-header">
                   <h2><?= $totalAlumni ?? 0 ?> Alumni Found</h2>
               </div>
+    
+              <div class="alumni-grid" id="alumniGrid">
+                  <?php include BASE_PATH . '/partials/alumni-grid.php'; ?>
+              </div>
               
-              <div class="alumni-grid">
+              <!-- <div class="alumni-grid">
                   <?php if (!empty($alumni)): ?>
                       <?php foreach ($alumni as $alumnus): ?>
                           <div class="alumni-card">
@@ -67,7 +71,7 @@ include BASE_PATH . '/layouts/head.layout.php';
                           <p>No alumni found <?= !empty($search) ? 'for "' . htmlspecialchars($search) . '"' : '' ?></p>
                       </div>
                   <?php endif; ?>
-              </div>
+              </div> -->
               
               <!-- Loading indicator for infinite scroll -->
               <div id="loadingIndicator" style="text-align: center; display: none; margin: 20px 0;">

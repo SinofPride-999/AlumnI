@@ -94,8 +94,9 @@ include BASE_PATH . '/layouts/head.layout.php';
                         </div>
                         <div class="floating-label-group">
                             <span class="floating-label">Content</span>
-                            <textarea name="content" id="content" class="form-control" required
-                                      placeholder="Write your post content here..."><?= htmlspecialchars($formData['content'] ?? '') ?></textarea>
+                            <textarea name="content" id="content" class="form-control" required placeholder="Write your post content here...">
+                                <?= htmlspecialchars($formData['content'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                            </textarea>
                         </div>
                         <div class="char-counter" id="content-counter">0/5000 characters</div>
                         <div class="content-preview" id="content-preview"></div>

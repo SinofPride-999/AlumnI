@@ -148,8 +148,8 @@ class ForumController extends Controller {
             $errors = [];
             
             $categoryId = intval($_POST['category_id']);
-            $title = sanitizeInput($_POST['title']);
-            $content = sanitizeInput($_POST['content']);
+            $title = trim($_POST['title']);
+            $content = trim($_POST['content']);
             
             if (empty($categoryId)) $errors['category'] = 'Category is required';
             if (empty($title)) $errors['title'] = 'Title is required';
@@ -193,7 +193,7 @@ class ForumController extends Controller {
         }
         
         try {
-            $content = sanitizeInput($_POST['content']);
+            $content = trim($_POST['content']);
             
             if (empty($content)) {
                 $_SESSION['post_error'] = 'Post content cannot be empty';

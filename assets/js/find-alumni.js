@@ -1,174 +1,155 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Advanced Search Modal
-    const advancedSearchBtn = document.getElementById('advancedSearchBtn');
-    const advancedSearchModal = document.getElementById('advancedSearchModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const resetSearchBtn = document.getElementById('resetSearchBtn');
-    const advancedSearchForm = document.getElementById('advancedSearchForm');
+    const searchInput = document.querySelector('input[name="search"]');
+    const alumniGrid = document.querySelector('.alumni-grid');
+    const resultsHeader = document.querySelector('.results-header h2');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    let searchTimeout;
 
-    // Show modal when advanced search button is clicked
-    if (advancedSearchBtn) {
-        advancedSearchBtn.addEventListener('click', function() {
-            advancedSearchModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    // Real-time search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim();
+            
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+            
+            // Show loading indicator for searches with more than 2 characters
+            if (searchTerm.length > 2) {
+                showLoading();
+            }
+            
+            // Set timeout to debounce the search
+            searchTimeout = setTimeout(() => {
+                performSearch(searchTerm);
+            }, 300); // 300ms debounce
+        });
+
+        // Prevent form submission on enter (we're using real-time search)
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
         });
     }
 
-    // Close modal when close button is clicked
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
-
-    // Close modal when clicking outside the modal content
-    advancedSearchModal.addEventListener('click', function(e) {
-        if (e.target === advancedSearchModal) {
-            closeModal();
+    // Function to perform the search
+    function performSearch(searchTerm) {
+        // Create URL with search parameters
+        const url = new URL('/find-alumni', window.location.origin);
+        if (searchTerm) {
+            url.searchParams.set('search', searchTerm);
         }
-    });
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && advancedSearchModal.classList.contains('active')) {
-            closeModal();
-        }
-    });
+        // Add realtime parameter to identify AJAX requests
+        url.searchParams.set('realtime', 'true');
 
-    // Reset search form
-    if (resetSearchBtn) {
-        resetSearchBtn.addEventListener('click', function() {
-            advancedSearchForm.reset();
-            showToast('Search filters reset');
-        });
-    }
-
-    // Form submission
-    if (advancedSearchForm) {
-        advancedSearchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('search-name').value;
-            const company = document.getElementById('search-company').value;
-            const major = document.getElementById('search-major').value;
-            const year = document.getElementById('search-year').value;
-            const industry = document.getElementById('search-industry').value;
-            const location = document.getElementById('search-location').value;
-            const skills = document.getElementById('search-skills').value;
-            
-            // In a real app, you would send this data to the server
-            console.log('Advanced search:', { 
-                name, 
-                company, 
-                major, 
-                year, 
-                industry, 
-                location, 
-                skills 
-            });
-            
-            // Show success message
-            showToast('Searching alumni with your criteria...');
-            
-            // Close modal
-            closeModal();
-        });
-    }
-
-    // Connect buttons
-    document.querySelectorAll('.connect-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const card = this.closest('.alumni-card');
-            const name = card.querySelector('h3').textContent;
-            
-            if (this.classList.contains('connected')) {
-                // Already connected
-                showToast(`You're already connected with ${name}`);
-            } else if (this.classList.contains('pending')) {
-                // Connection pending
-                showToast(`Connection request already sent to ${name}`);
-            } else {
-                // New connection
-                this.innerHTML = '<i class="fas fa-clock"></i>';
-                this.classList.add('pending');
-                showToast(`Connection request sent to ${name}`);
+        fetch(url.toString())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Parse the HTML response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
                 
-                // Simulate connection acceptance after delay
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-check"></i>';
-                    this.classList.remove('pending');
-                    this.classList.add('connected');
-                    showToast(`${name} accepted your connection request`);
-                }, 3000);
-            }
-        });
-    });
+                // Extract the alumni grid and results count
+                const newAlumniGrid = doc.querySelector('.alumni-grid');
+                const newResultsHeader = doc.querySelector('.results-header h2');
+                
+                if (newAlumniGrid && alumniGrid) {
+                    alumniGrid.innerHTML = newAlumniGrid.innerHTML;
+                }
+                
+                if (newResultsHeader && resultsHeader) {
+                    resultsHeader.textContent = newResultsHeader.textContent;
+                }
 
-    // Message buttons
-    document.querySelectorAll('.alumni-actions .btn-primary').forEach(button => {
-        button.addEventListener('click', function() {
-            const card = this.closest('.alumni-card');
-            const name = card.querySelector('h3').textContent;
-            showToast(`Messaging feature coming soon! Would message ${name}`);
-        });
-    });
-
-    // View profile buttons
-    document.querySelectorAll('.alumni-actions .btn-text').forEach(button => {
-        button.addEventListener('click', function() {
-            const card = this.closest('.alumni-card');
-            const name = card.querySelector('h3').textContent;
-            showToast(`Would view profile of ${name}`);
-        });
-    });
-
-    // Quick filter buttons
-    document.querySelectorAll('.quick-filters .filter-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.quick-filters .filter-btn').forEach(btn => {
-                btn.classList.remove('active');
+                hideLoading();
+                reinitializeEventListeners();
+            })
+            .catch(error => {
+                console.error('Search error:', error);
+                hideLoading();
+                showToast('Search failed. Please try again.');
             });
-            this.classList.add('active');
-            
-            // In a real app, you would filter the alumni results
-            const filterText = this.textContent.trim();
-            showToast(`Filtering by: ${filterText}`);
-        });
-    });
-
-    // Sort dropdown
-    const sortDropdown = document.getElementById('sort-by');
-    if (sortDropdown) {
-        sortDropdown.addEventListener('change', function() {
-            const sortOption = this.options[this.selectedIndex].text;
-            showToast(`Sorted by: ${sortOption}`);
-        });
     }
 
-    // Pagination buttons
-    document.querySelectorAll('.pagination button:not([disabled])').forEach(button => {
-        button.addEventListener('click', function() {
-            if (this.textContent.includes('Previous') || this.textContent.includes('Next')) {
-                showToast(`Navigating to ${this.textContent.trim()} page`);
-            } else {
-                document.querySelector('.page-numbers button.active').classList.remove('active');
-                this.classList.add('active');
-                showToast(`Showing page ${this.textContent}`);
-            }
-        });
-    });
-
-    // Helper function to close modal
-    function closeModal() {
-        advancedSearchModal.classList.remove('active');
-        document.body.style.overflow = '';
+    // Show loading indicator
+    function showLoading() {
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        if (alumniGrid) {
+            alumniGrid.style.opacity = '0.5';
+        }
     }
-    
-    // Helper function to show toast messages
+
+    // Hide loading indicator
+    function hideLoading() {
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+        if (alumniGrid) {
+            alumniGrid.style.opacity = '1';
+        }
+    }
+
+    // Reinitialize event listeners after content update
+    function reinitializeEventListeners() {
+        // Reattach message button listeners
+        document.querySelectorAll('.message-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-userid');
+                showToast('Messaging feature coming soon! Would message user ID: ' + userId);
+            });
+        });
+
+        // Reattach other interactive elements as needed
+    }
+
+    // Toast notification function
     function showToast(message) {
+        // Remove existing toast if any
+        const existingToast = document.querySelector('.toast-message');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
         const toast = document.createElement('div');
         toast.className = 'toast-message';
         toast.textContent = message;
         document.body.appendChild(toast);
+        
+        // Add toast styles if not already present
+        if (!document.querySelector('#toast-styles')) {
+            const toastStyles = document.createElement('style');
+            toastStyles.id = 'toast-styles';
+            toastStyles.textContent = `
+                .toast-message {
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(100px);
+                    background-color: var(--color-primary);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 50px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                }
+                
+                .toast-message.show {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+            `;
+            document.head.appendChild(toastStyles);
+        }
         
         setTimeout(() => {
             toast.classList.add('show');
@@ -181,28 +162,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         }, 3000);
     }
-    
-    // Add toast styles dynamically
-    const toastStyles = document.createElement('style');
-    toastStyles.textContent = `
-        .toast-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--color-primary);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+
+    // Existing modal functionality (keep this from your original code)
+    const advancedSearchBtn = document.getElementById('advancedSearchBtn');
+    const advancedSearchModal = document.getElementById('advancedSearchModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    if (advancedSearchBtn && advancedSearchModal) {
+        advancedSearchBtn.addEventListener('click', function() {
+            advancedSearchModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+            advancedSearchModal.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+
+    if (advancedSearchModal) {
+        advancedSearchModal.addEventListener('click', function(e) {
+            if (e.target === advancedSearchModal) {
+                advancedSearchModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && advancedSearchModal && advancedSearchModal.classList.contains('active')) {
+            advancedSearchModal.classList.remove('active');
+            document.body.style.overflow = '';
         }
-        
-        .toast-message.show {
-            opacity: 1;
-        }
-    `;
-    document.head.appendChild(toastStyles);
+    });
 });

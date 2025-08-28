@@ -7,6 +7,14 @@
                         <span>AlumnI</span>
                     </a>
                 </div>
+              
+              <div class="nav-links">
+                  <a href="/dashboard" class="nav-link">Dashboard</a>
+                  <a href="/events" class="nav-link">Events</a>
+                  <a href="/jobs" class="nav-link">Job Board</a>
+                  <a href="/forum" class="nav-link">Forum</a>
+                  <a href="/find-alumni" class="nav-link">Find Almuni</a>
+              </div>
                 
                 <div class="nav-actions">
                     <button class="theme-toggle" id="themeToggle">

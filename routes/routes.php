@@ -3,7 +3,9 @@ require_once __DIR__ . '/../app/config.php';
 require_once __DIR__ . '/../utils/helper.php';
 require_once __DIR__ . '/../app/Router.php';
 
+# ==========================
 # Auto-load controllers
+# ==========================
 $controllers = [
     'RegisterController',
     'LoginController',
@@ -22,7 +24,9 @@ foreach ($controllers as $controller) {
     require_once __DIR__ . "/../app/controllers/{$controller}.php";
 }
 
+# ==========================
 # Initialize controllers
+# ==========================
 $controllers = [
     'register' => new RegisterController($pdo),
     'login' => new LoginController($pdo),
@@ -37,7 +41,9 @@ $controllers = [
     'events' => new EventController($pdo)
 ];
 
-# Error handlers - CHANGED FROM error() TO setErrorHandler()
+# ==========================
+# Error handlers
+# ==========================
 Router::setErrorHandler(404, function() {
     require __DIR__ . '/../404.php';
 });
@@ -46,10 +52,14 @@ Router::setErrorHandler(500, function() {
     require __DIR__ . '/../500.php';
 });
 
+# ==========================
 # Index Route
+# ==========================
 Router::get('/', __DIR__ . '/../pages/landing-page.php');
 
+# ==========================
 # Authentication Routes
+# ==========================
 Router::get('/register', [$controllers['register'], 'show']);
 Router::post('/register', [$controllers['register'], 'handle']);
 
@@ -58,15 +68,18 @@ Router::post('/login', [$controllers['login'], 'handle']);
 
 Router::post('/logout', [$controllers['logout'], 'handle']);
 
-
+# ==========================
 # Password Reset Route
+# ==========================
 Router::get('/forgot-password', [$controllers['forgotPassword'], 'show']);
 Router::post('/forgot-password', [$controllers['forgotPassword'], 'handle']);
 
 Router::get('/reset-password', [$controllers['resetPassword'], 'show']);
 Router::post('/reset-password', [$controllers['resetPassword'], 'handle']);
 
+# ==========================
 # 404 Route
+# ==========================
 Router::get('/404', __DIR__ . '/../404.php');
 Router::get('/500', __DIR__ . '/../500.php');
 

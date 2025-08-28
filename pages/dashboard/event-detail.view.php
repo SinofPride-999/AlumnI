@@ -39,17 +39,17 @@ include BASE_PATH . '/layouts/head.layout.php';
                     <span>on <?= date('M j, Y', strtotime($event['created_at'])) ?></span>
                 </div>
 
-                <?php if ($event['event_date']): ?>
-                    <div class="event-date">
-                        <strong>When:</strong> <?= date('M j, Y g:i A', strtotime($event['event_date'])) ?>
-                    </div>
-                <?php endif; ?>
-
                 <?php if ($event['location']): ?>
                     <div class="event-location">
                         <strong>Where:</strong> 
                         <?= $event['is_online'] ? 'Online - ' : '' ?>
                         <?= htmlspecialchars($event['location']) ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($event['event_date']): ?>
+                    <div class="event-location">
+                        <strong>When:</strong> <?= date('M j, Y g:i A', strtotime($event['event_date'])) ?>
                     </div>
                 <?php endif; ?>
 

@@ -6,7 +6,6 @@ $title = "Dashboard - Alumni Connect";
 
 $styles = [
     '/assets/css/dashboard.css',
-    '/assets/css/dashboard.css',
 ];
 
 $inlineStyle = <<<STYLE
@@ -60,7 +59,7 @@ include BASE_PATH . '/layouts/head.layout.php';
         <div class="container">
             <!-- Welcome Section -->
             <section class="welcome-section">
-                <h1>Welcome, <span><?= htmlspecialchars($user['first_name'], ENT_QUOTES, 'UTF-8') ?></span></h1>
+                <h1><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name'], ENT_QUOTES, 'UTF-8') ?></h1>
                 <div class="profile-completion">
                     <div class="completion-message">
                         <p>Your profile is <strong><?= $profileCompletion ?>% complete</strong></p>
@@ -110,12 +109,12 @@ include BASE_PATH . '/layouts/head.layout.php';
                                 <span class="month"><?= date('M', strtotime($event['event_date'])) ?></span>
                             </div>
                             <div class="event-details">
-                                <h3><?= htmlspecialchars($event['title']) ?></h3>
+                                <h3><?= htmlspecialchars($event['title'] ?? '') ?></h3>
                                 <p class="event-meta">
                                     <?php if ($event['is_online']): ?>
                                         <i class="fas fa-video"></i> Online
                                     <?php else: ?>
-                                        <i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($event['location']) ?>
+                                        <i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($event['location'] ?? '') ?>
                                     <?php endif; ?>
                                     <i class="fas fa-clock"></i> <?= date('g:i A', strtotime($event['event_date'])) ?>
                                 </p>
